@@ -1,3 +1,3 @@
 # RadarrPusherApi
 
-test which user is being commited on
+Test which user is being commited on
