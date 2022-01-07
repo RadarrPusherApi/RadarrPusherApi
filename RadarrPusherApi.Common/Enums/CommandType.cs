@@ -7,6 +7,6 @@
     {
         DeleteCloudinaryRawFileCommand,
         GetWorkerServiceVersionCommand,
-        GetMoviesPagedCommand
+        GetMoviesCommand
     }
 }

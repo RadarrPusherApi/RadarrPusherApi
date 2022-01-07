@@ -7,7 +7,7 @@ namespace RadarrPusherApi.WorkerService.Windows
         public Worker(IConfiguration configuration,
             IDeleteCloudinaryRawFileCommandReceiver deleteCloudinaryRawFileCommandReceiver,
             IGetWorkerServiceVersionCommandReceiver getWorkerServiceVersionCommandReceiver,
-            IGetMoviesPagedCommandReceiver getMoviesPagedCommandReceiver)
+            IGetMoviesCommandReceiver getMoviesCommandReceiver)
         {
             var pusherAppId = configuration.GetSection("PusherAppId").Value;
             var pusherKey = configuration.GetSection("PusherKey").Value;
@@ -15,7 +15,7 @@ namespace RadarrPusherApi.WorkerService.Windows
             var pusherCluster = configuration.GetSection("PusherCluster").Value;
 
             getWorkerServiceVersionCommandReceiver.Connect(pusherAppId, pusherKey, pusherSecret, pusherCluster);
-            getMoviesPagedCommandReceiver.Connect(pusherAppId, pusherKey, pusherSecret, pusherCluster);
+            getMoviesCommandReceiver.Connect(pusherAppId, pusherKey, pusherSecret, pusherCluster);
             deleteCloudinaryRawFileCommandReceiver.Connect(pusherAppId, pusherKey, pusherSecret, pusherCluster);
         }
 

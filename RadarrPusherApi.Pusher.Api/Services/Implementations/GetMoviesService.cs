@@ -10,13 +10,13 @@ using System.Diagnostics;
 
 namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 {
-    public class GetMoviesPagedService : IGetMoviesPagedService
+    public class GetMoviesService : IGetMoviesService
     {
         private readonly IWorkerServiceReceiver _workerServiceReceiver;
         private readonly ICloudinaryClient _cloudinaryClient;
         private readonly IDeleteCloudinaryRawFileService _deleteCloudinaryRawFileService;
 
-        public GetMoviesPagedService(IWorkerServiceReceiver workerServiceReceiver, ICloudinaryClient cloudinaryClient, IDeleteCloudinaryRawFileService deleteCloudinaryRawFileService)
+        public GetMoviesService(IWorkerServiceReceiver workerServiceReceiver, ICloudinaryClient cloudinaryClient, IDeleteCloudinaryRawFileService deleteCloudinaryRawFileService)
         {
             _workerServiceReceiver = workerServiceReceiver;
             _cloudinaryClient = cloudinaryClient;
@@ -24,24 +24,24 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
         }
 
         /// <summary>
-        /// Returns the movies paged from Radarr.
+        /// Returns the movies from Radarr.
         /// </summary>
-        /// <returns>Returns a MoviePaged</returns>
-        public async Task<IList<Movie>> GetMoviesPagedServiceAsync(Setting setting)
+        /// <returns>Returns a list of Movies</returns>
+        public async Task<IList<Movie>> GetMoviesServiceAsync(Setting setting)
         {
             IList<Movie>? movies = null;
 
             var chanelGuid = Guid.NewGuid();
-            var channelNameReceive = $"{ CommandType.GetMoviesPagedCommand }{ PusherChannel.ApiChannel}_{chanelGuid}";
-            var eventNameReceive = $"{ CommandType.GetMoviesPagedCommand }{ PusherEvent.ApiEvent}";
-            var channelNameSend = $"{ CommandType.GetMoviesPagedCommand }{ PusherChannel.WorkerServiceChannel}";
-            var eventNameSend = $"{ CommandType.GetMoviesPagedCommand }{ PusherEvent.WorkerServiceEvent}";
+            var channelNameReceive = $"{ CommandType.GetMoviesCommand }{ PusherChannel.ApiChannel}_{chanelGuid}";
+            var eventNameReceive = $"{ CommandType.GetMoviesCommand }{ PusherEvent.ApiEvent}";
+            var channelNameSend = $"{ CommandType.GetMoviesCommand }{ PusherChannel.WorkerServiceChannel}";
+            var eventNameSend = $"{ CommandType.GetMoviesCommand }{ PusherEvent.WorkerServiceEvent}";
 
             try
             {
                 await _workerServiceReceiver.Connect(channelNameReceive, eventNameReceive, setting.PusherAppId, setting.PusherKey, setting.PusherSecret, setting.PusherCluster);
                 
-                var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.GetMoviesPagedCommand, SendMessageChanelGuid = chanelGuid.ToString() };
+                var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.GetMoviesCommand, SendMessageChanelGuid = chanelGuid.ToString() };
                 await _workerServiceReceiver.SendMessage(channelNameSend, eventNameSend, JsonConvert.SerializeObject(pusherSendMessage), setting.PusherAppId, setting.PusherKey, setting.PusherSecret, setting.PusherCluster);
 
                 var stopwatch = new Stopwatch();

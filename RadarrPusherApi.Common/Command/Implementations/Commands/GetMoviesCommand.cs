@@ -5,19 +5,19 @@ using RadarrPusherApi.Common.Models;
 
 namespace RadarrPusherApi.Common.Command.Implementations.Commands
 {
-    public class GetMoviesPagedCommand : ICommand
+    public class GetMoviesCommand : ICommand
     {
         private readonly IRadarrClient _radarrClient;
 
-        public GetMoviesPagedCommand(IRadarrClient radarrClient)
+        public GetMoviesCommand(IRadarrClient radarrClient)
         {
             _radarrClient = radarrClient;
         }
 
         /// <summary>
-        /// Returns the movies paged from Radarr.
+        /// Returns the movies from Radarr.
         /// </summary>
-        /// <returns>Returns a MoviePagedModel</returns>
+        /// <returns>Returns a list of Movies</returns>
         public async Task<CommandObject> Execute()
         {
             var movies = await _radarrClient.Movie.GetMovies();

@@ -10,7 +10,7 @@ using RadarrPusherApi.Pusher.Api.Receivers.Interfaces;
 
 namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
 {
-    public class GetMoviesPagedCommandReceiver : Pusher, IGetMoviesPagedCommandReceiver
+    public class GetMoviesCommandReceiver : Pusher, IGetMoviesCommandReceiver
     {
         private readonly ILogger _logger;
         private readonly IRadarrClient _radarrClient;
@@ -20,19 +20,19 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
         private readonly string _channelNameSend;
         private readonly string _eventNameSend;
 
-        public GetMoviesPagedCommandReceiver(ILogger logger, IRadarrClient radarrClient, IInvoker invoker, ICloudinaryClient cloudinaryClient) : base(logger, invoker, cloudinaryClient)
+        public GetMoviesCommandReceiver(ILogger logger, IRadarrClient radarrClient, IInvoker invoker, ICloudinaryClient cloudinaryClient) : base(logger, invoker, cloudinaryClient)
         {
             _logger = logger;
             _radarrClient = radarrClient;
 
-            _channelNameReceive = $"{ CommandType.GetMoviesPagedCommand }{ PusherChannel.WorkerServiceChannel }";
-            _eventNameReceive = $"{ CommandType.GetMoviesPagedCommand }{ PusherEvent.WorkerServiceEvent }";
-            _channelNameSend = $"{ CommandType.GetMoviesPagedCommand }{ PusherChannel.ApiChannel }";
-            _eventNameSend = $"{ CommandType.GetMoviesPagedCommand }{ PusherEvent.ApiEvent }";
+            _channelNameReceive = $"{ CommandType.GetMoviesCommand }{ PusherChannel.WorkerServiceChannel }";
+            _eventNameReceive = $"{ CommandType.GetMoviesCommand }{ PusherEvent.WorkerServiceEvent }";
+            _channelNameSend = $"{ CommandType.GetMoviesCommand }{ PusherChannel.ApiChannel }";
+            _eventNameSend = $"{ CommandType.GetMoviesCommand }{ PusherEvent.ApiEvent }";
         }
 
         /// <summary>
-        /// Connect the get movies paged command receiver to the Pusher Pub/Sub.
+        /// Connect the get movies command receiver to the Pusher Pub/Sub.
         /// </summary>
         /// <param name="appId">The Pusher app id</param>
         /// <param name="key">The Pusher key</param>
@@ -53,9 +53,9 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
                         string pusherData = data.GetType().GetProperty("data").GetValue(data, null);
                         var deserializeObject = JsonConvert.DeserializeObject<PusherSendMessageModel>(pusherData);
 
-                        if (deserializeObject.Command == CommandType.GetMoviesPagedCommand)
+                        if (deserializeObject.Command == CommandType.GetMoviesCommand)
                         {
-                            var command = new GetMoviesPagedCommand(_radarrClient);
+                            var command = new GetMoviesCommand(_radarrClient);
                             await ExecuteCommand(command, $"{_channelNameSend}_{deserializeObject.SendMessageChanelGuid}", _eventNameSend, appId, key, secret, cluster);
                         }
                     });

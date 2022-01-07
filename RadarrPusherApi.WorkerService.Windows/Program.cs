@@ -31,7 +31,7 @@ var host = Host.CreateDefaultBuilder(args)
 
         services.AddSingleton<IDeleteCloudinaryRawFileCommandReceiver, DeleteCloudinaryRawFileCommandReceiver>();
         services.AddSingleton<IGetWorkerServiceVersionCommandReceiver, GetWorkerServiceVersionCommandReceiver>();
-        services.AddSingleton<IGetMoviesPagedCommandReceiver, GetMoviesPagedCommandReceiver>();
+        services.AddSingleton<IGetMoviesCommandReceiver, GetMoviesCommandReceiver>();
     })
     .Build();
 
