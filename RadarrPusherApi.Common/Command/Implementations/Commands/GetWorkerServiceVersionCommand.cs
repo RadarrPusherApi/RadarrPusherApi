@@ -7,7 +7,7 @@ namespace RadarrPusherApi.Common.Command.Implementations.Commands
 {
     public class GetWorkerServiceVersionCommand : ICommand
     {
-        private const string AppName = "RadarrPusherApi.WorkerService.Windows";
+        private const string AppName = "RadarrPusherApi.Common";
         
         /// <summary>
         /// Returns the Worker Service version.

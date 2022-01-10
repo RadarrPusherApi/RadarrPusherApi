@@ -13,7 +13,7 @@ namespace RadarrPusherApi.Common.Tests.Command.Commands
     public class GetMoviesCommandTests
     {
         private readonly Mock<IRadarrClient> _mockIRadarrClient;
-        private GetMoviesCommand _getMoviesPagedCommand;
+        private GetMoviesCommand _getMoviesCommand;
 
         public GetMoviesCommandTests()
         {
@@ -27,16 +27,16 @@ namespace RadarrPusherApi.Common.Tests.Command.Commands
 
             // Arrange
             _mockIRadarrClient.Setup(x => x.Movie.GetMovies()).ReturnsAsync(MovieFactory.CreateMovies(noOfMovies));
-            _getMoviesPagedCommand = new GetMoviesCommand(_mockIRadarrClient.Object);
+            _getMoviesCommand = new GetMoviesCommand(_mockIRadarrClient.Object);
 
             // Act
-            var commandData = await _getMoviesPagedCommand.Execute();
+            var commandData = await _getMoviesCommand.Execute();
 
-            var moviePaged = JsonConvert.DeserializeObject<IList<Movie>>(commandData.Message);
+            var movies = JsonConvert.DeserializeObject<IList<Movie>>(commandData.Message);
 
             // Assert
-            Assert.NotNull(moviePaged);
-            Assert.Equal(noOfMovies, moviePaged.Count);
+            Assert.NotNull(movies);
+            Assert.Equal(noOfMovies, movies.Count);
         }
 
         [Fact]
@@ -46,16 +46,16 @@ namespace RadarrPusherApi.Common.Tests.Command.Commands
 
             // Arrange
             _mockIRadarrClient.Setup(x => x.Movie.GetMovies()).ReturnsAsync(MovieFactory.CreateMovies(noOfMovies));
-            _getMoviesPagedCommand = new GetMoviesCommand(_mockIRadarrClient.Object);
+            _getMoviesCommand = new GetMoviesCommand(_mockIRadarrClient.Object);
 
             // Act
-            var commandData = await _getMoviesPagedCommand.Execute();
+            var commandData = await _getMoviesCommand.Execute();
 
-            var moviePaged = JsonConvert.DeserializeObject<IList<Movie>>(commandData.Message);
+            var movies = JsonConvert.DeserializeObject<IList<Movie>>(commandData.Message);
 
             // Assert
-            Assert.NotNull(moviePaged);
-            Assert.Equal(noOfMovies, moviePaged.Count);
+            Assert.NotNull(movies);
+            Assert.Equal(noOfMovies, movies.Count);
         }
     }
 }
