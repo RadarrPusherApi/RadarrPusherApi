@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadarrPusherApi.Common", "R
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadarrPusherApi.Common.Tests", "RadarrPusherApi.Common.Tests\RadarrPusherApi.Common.Tests.csproj", "{CACCF6C0-0010-4E0A-91BA-D9E0D42C4B90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadarrPusherApi.Pusher.Api.IntegrationTests", "RadarrPusherApi.Pusher.Api.IntegrationTests\RadarrPusherApi.Pusher.Api.IntegrationTests.csproj", "{2AEC73FA-33EE-42BA-843E-94A308F083DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadarrPusherApi.Pusher.Api.IntegrationTests", "RadarrPusherApi.Pusher.Api.IntegrationTests\RadarrPusherApi.Pusher.Api.IntegrationTests.csproj", "{2AEC73FA-33EE-42BA-843E-94A308F083DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadarrPusherApi.Cloudinary.Api.IntegrationTests", "RadarrPusherApi.Cloudinary.Api.IntegrationTests\RadarrPusherApi.Cloudinary.Api.IntegrationTests.csproj", "{3446B9FE-C5FD-4A44-ADED-D4DC75E9434D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{2AEC73FA-33EE-42BA-843E-94A308F083DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AEC73FA-33EE-42BA-843E-94A308F083DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AEC73FA-33EE-42BA-843E-94A308F083DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3446B9FE-C5FD-4A44-ADED-D4DC75E9434D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3446B9FE-C5FD-4A44-ADED-D4DC75E9434D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3446B9FE-C5FD-4A44-ADED-D4DC75E9434D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3446B9FE-C5FD-4A44-ADED-D4DC75E9434D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
