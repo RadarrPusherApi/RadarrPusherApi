@@ -9,7 +9,7 @@
         public string PusherKey { get; set; }
         public string PusherSecret { get; set; }
         public string PusherCluster { get; set; }
-        public string RadarrUrl { get; set; }
+        public string RadarrApiBaseUrl { get; set; }
         public string RadarrApiKey { get; set; }
     }
 }

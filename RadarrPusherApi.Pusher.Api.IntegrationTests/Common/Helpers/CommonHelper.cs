@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using RadarrApiWrapper;
 using RadarrPusherApi.Cloudinary.Api;
 using RadarrPusherApi.Common.Command.Implementations;
 using RadarrPusherApi.Common.Command.Interfaces;
@@ -16,7 +17,7 @@ namespace RadarrPusherApi.Pusher.Api.IntegrationTests.Common.Helpers
     public class CommonHelper
     {
         public Settings Settings { get; }
-        public IRestClient RestClient { get; }
+        public IRadarrClient RadarrClient { get; }
         public IInvoker Invoker { get; }
         public ILogger Logger { get; }
         public ICloudinaryClient CloudinaryClient { get; }
@@ -29,8 +30,10 @@ namespace RadarrPusherApi.Pusher.Api.IntegrationTests.Common.Helpers
             Settings = new Settings();
             configuration.Bind(Settings);
 
-            RestClient = new RestClient(Settings.RadarrUrl);
-            RestClient.AddDefaultHeader("X-Api-Key", Settings.RadarrApiKey);
+            var restClient = new RestClient(Settings.RadarrApiBaseUrl);
+            restClient.AddDefaultHeader("X-Api-Key", Settings.RadarrApiKey);
+
+            RadarrClient = new RadarrClient(restClient);
 
             Invoker = new Invoker();
             Logger = new Logger(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RadarrPusherApi.Pusher.Api.IntegrationTests.SQLite.db3"));

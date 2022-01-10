@@ -15,11 +15,11 @@ var host = Host.CreateDefaultBuilder(args)
         var cloudinaryCloudName = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("CloudinaryCloudName").Value;
         var cloudinaryApiKey = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("CloudinaryApiKey").Value;
         var cloudinaryApiSecret = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("CloudinaryApiSecret").Value;
-        var radarrUrl = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("RadarrUrl").Value;
+        var radarrApiBaseUrl = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("RadarrApiBaseUrl").Value;
         var radarrApiKey = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("RadarrApiKey").Value;
 
         services.AddSingleton<ICloudinaryClient, CloudinaryClient>(serviceProvider => new CloudinaryClient(cloudinaryCloudName, cloudinaryApiKey, cloudinaryApiSecret));
-        var restClient = new RestClient(radarrUrl);
+        var restClient = new RestClient(radarrApiBaseUrl);
         restClient.AddDefaultHeader("X-Api-Key", radarrApiKey);
 
         services.AddSingleton<RadarrPusherApi.Common.Logger.Interfaces.ILogger, Logger>(serviceProvider => new Logger(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RadarrApiWrapper.WorkerService.Windows.SQLite.db3")));
