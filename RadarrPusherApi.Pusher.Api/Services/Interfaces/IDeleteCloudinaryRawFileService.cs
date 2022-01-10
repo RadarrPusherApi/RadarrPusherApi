@@ -1,6 +1,4 @@
-﻿using RadarrPusherApi.Common.Models;
-
-namespace RadarrPusherApi.Pusher.Api.Services.Interfaces
+﻿namespace RadarrPusherApi.Pusher.Api.Services.Interfaces
 {
     public interface IDeleteCloudinaryRawFileService
     {
@@ -8,6 +6,6 @@ namespace RadarrPusherApi.Pusher.Api.Services.Interfaces
         /// Delete the cloudinary raw file by public id.
         /// </summary>
         /// <returns></returns>
-        Task DeleteCloudinaryRawFile(Setting setting, string publicId);
+        Task DeleteCloudinaryRawFile(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster, string publicId);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using NzbDrone.Core.Movies;
-using RadarrPusherApi.Common.Models;
 
 namespace RadarrPusherApi.Pusher.Api.Services.Interfaces
 {
@@ -9,6 +8,6 @@ namespace RadarrPusherApi.Pusher.Api.Services.Interfaces
         /// Returns the movies from Radarr.
         /// </summary>
         /// <returns>Returns a list of Movies</returns>
-        Task<IList<Movie>> GetMoviesServiceAsync(Setting setting);
+        Task<IList<Movie>> GetMoviesServiceAsync(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster);
     }
 }

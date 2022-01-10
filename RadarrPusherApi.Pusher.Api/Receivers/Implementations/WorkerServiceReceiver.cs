@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using RadarrPusherApi.Cloudinary.Api;
+using RadarrPusherApi.Common.Command.Interfaces;
 using RadarrPusherApi.Common.Logger.Interfaces;
 using RadarrPusherApi.Pusher.Api.Models;
 using RadarrPusherApi.Pusher.Api.Receivers.Interfaces;
@@ -14,7 +16,7 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
         public string ReturnData { get; set; }
         private PusherClient.Pusher _pusherReceive;
 
-        public WorkerServiceReceiver(ILogger logger)
+        public WorkerServiceReceiver(ILogger logger, IInvoker invoker, ICloudinaryClient cloudinaryClient) : base(logger, invoker, cloudinaryClient)
         {
             _logger = logger;
         }

@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadarrPusherApi.Pusher.Api"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadarrPusherApi.Common", "RadarrPusherApi.Common\RadarrPusherApi.Common.csproj", "{F5CE3287-C46A-4D36-91B6-4BB09C4841BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadarrPusherApi.Common.Tests", "RadarrPusherApi.Common.Tests\RadarrPusherApi.Common.Tests.csproj", "{CACCF6C0-0010-4E0A-91BA-D9E0D42C4B90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadarrPusherApi.Common.Tests", "RadarrPusherApi.Common.Tests\RadarrPusherApi.Common.Tests.csproj", "{CACCF6C0-0010-4E0A-91BA-D9E0D42C4B90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadarrPusherApi.Pusher.Api.IntegrationTests", "RadarrPusherApi.Pusher.Api.IntegrationTests\RadarrPusherApi.Pusher.Api.IntegrationTests.csproj", "{2AEC73FA-33EE-42BA-843E-94A308F083DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{CACCF6C0-0010-4E0A-91BA-D9E0D42C4B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CACCF6C0-0010-4E0A-91BA-D9E0D42C4B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CACCF6C0-0010-4E0A-91BA-D9E0D42C4B90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AEC73FA-33EE-42BA-843E-94A308F083DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AEC73FA-33EE-42BA-843E-94A308F083DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AEC73FA-33EE-42BA-843E-94A308F083DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AEC73FA-33EE-42BA-843E-94A308F083DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

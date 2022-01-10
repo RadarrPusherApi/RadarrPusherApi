@@ -36,6 +36,6 @@
         /// <param name="secret">The Pusher secret</param>
         /// <param name="cluster">The Pusher cluster</param>
         /// <returns></returns>
-        Task SendMessage(string channelName, string eventName, string message, string appId, string key, string secret, string cluster);
+        Task SendMessage(string channelName, string eventName, bool useCloudinary, string message, string appId, string key, string secret, string cluster);
     }
 }

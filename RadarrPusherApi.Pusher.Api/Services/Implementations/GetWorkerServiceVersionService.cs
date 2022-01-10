@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using RadarrPusherApi.Cloudinary.Api;
 using RadarrPusherApi.Common.Enums;
 using RadarrPusherApi.Common.Logger.Interfaces;
 using RadarrPusherApi.Common.Models;
@@ -13,18 +14,22 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
     {
         private readonly ILogger _logger;
         private readonly IWorkerServiceReceiver _workerServiceReceiver;
+        private readonly ICloudinaryClient _cloudinaryClient;
+        private readonly IDeleteCloudinaryRawFileService _deleteCloudinaryRawFileService;
 
-        public GetWorkerServiceVersionService(ILogger logger, IWorkerServiceReceiver workerServiceReceiver)
+        public GetWorkerServiceVersionService(ILogger logger, IWorkerServiceReceiver workerServiceReceiver, ICloudinaryClient cloudinaryClient, IDeleteCloudinaryRawFileService deleteCloudinaryRawFileService)
         {
             _logger = logger;
             _workerServiceReceiver = workerServiceReceiver;
+            _cloudinaryClient = cloudinaryClient;
+            _deleteCloudinaryRawFileService = deleteCloudinaryRawFileService;
         }
 
         /// <summary>
         /// Returns the Worker Service version.
         /// </summary>
         /// <returns>Returns WorkerServiceVersionModel</returns>
-        public async Task<WorkerServiceVersionModel> GetWorkerServiceVersionServiceAsync(Setting setting)
+        public async Task<WorkerServiceVersionModel> GetWorkerServiceVersionServiceAsync(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster)
         {
             WorkerServiceVersionModel workerServiceVersion = null;
 
@@ -36,10 +41,10 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 
             try
             {
-                await _workerServiceReceiver.Connect(channelNameReceive, eventNameReceive, setting.PusherAppId, setting.PusherKey, setting.PusherSecret, setting.PusherCluster);
+                await _workerServiceReceiver.Connect(channelNameReceive, eventNameReceive, pusherAppId, pusherKey, pusherSecret, pusherCluster);
 
                 var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.GetWorkerServiceVersionCommand, SendMessageChanelGuid = chanelGuid.ToString() };
-                await _workerServiceReceiver.SendMessage(channelNameSend, eventNameSend, JsonConvert.SerializeObject(pusherSendMessage), setting.PusherAppId, setting.PusherKey, setting.PusherSecret, setting.PusherCluster);
+                await _workerServiceReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage), pusherAppId, pusherKey, pusherSecret, pusherCluster);
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -51,15 +56,24 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
                         throw new Exception("Get Worker Service version took too long!");
                     }
                 }
-
+                
                 if (_workerServiceReceiver.CommandCompleted)
                 {
                     if (string.IsNullOrWhiteSpace(_workerServiceReceiver.ReturnData))
                     {
-                        throw new Exception("Get Worker Service version has no return data!");
+                        throw new Exception("Get movies has no return data!");
                     }
 
-                    workerServiceVersion = JsonConvert.DeserializeObject<WorkerServiceVersionModel>(_workerServiceReceiver.ReturnData);
+                    var responseContent = await _cloudinaryClient.DownloadRawFile(_workerServiceReceiver.ReturnData);
+
+                    await _deleteCloudinaryRawFileService.DeleteCloudinaryRawFile(pusherAppId, pusherKey, pusherSecret, pusherCluster, _workerServiceReceiver.CloudinaryPublicId);
+
+                    if (string.IsNullOrWhiteSpace(responseContent))
+                    {
+                        throw new Exception("Get movies cloudinary response has no return data!");
+                    }
+
+                    workerServiceVersion = JsonConvert.DeserializeObject<WorkerServiceVersionModel>(responseContent);
                 }
             }
             catch (Exception ex)

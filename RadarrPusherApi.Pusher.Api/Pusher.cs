@@ -10,8 +10,6 @@ namespace RadarrPusherApi.Pusher.Api
         private readonly IInvoker _invoker;
         private readonly ICloudinaryClient _cloudinaryClient;
 
-        public Pusher() { }
-
         public Pusher(ILogger logger, IInvoker invoker, ICloudinaryClient cloudinaryClient)
         {
             _logger = logger;
@@ -30,15 +28,22 @@ namespace RadarrPusherApi.Pusher.Api
         /// <param name="secret">The Pusher secret</param>
         /// <param name="cluster">The Pusher cluster</param>
         /// <returns></returns>
-        public async Task SendMessage(string channelName, string eventName, string message, string appId, string key, string secret, string cluster)
+        public async Task SendMessage(string channelName, string eventName, bool useCloudinary, string message, string appId, string key, string secret, string cluster)
         {
             if (!string.IsNullOrWhiteSpace(appId) && !string.IsNullOrWhiteSpace(key) && !string.IsNullOrWhiteSpace(secret) && !string.IsNullOrWhiteSpace(cluster))
             {
                 var pusherSend = new PusherServer.Pusher(appId, key, secret, new PusherServer.PusherOptions { Cluster = cluster });
 
-                var cloudinaryPublicId = Guid.NewGuid().ToString();
-                var url = await _cloudinaryClient.UploadRawFile(message, cloudinaryPublicId);
-                await pusherSend.TriggerAsync(channelName, eventName, new { Message = url, CloudinaryPublicId = cloudinaryPublicId });
+                if (useCloudinary)
+                {
+                    var cloudinaryPublicId = Guid.NewGuid().ToString();
+                    var url = await _cloudinaryClient.UploadRawFile(message, cloudinaryPublicId);
+                    await pusherSend.TriggerAsync(channelName, eventName, new { Message = url, CloudinaryPublicId = cloudinaryPublicId });
+                }
+                else
+                {
+                    await pusherSend.TriggerAsync(channelName, eventName, new { Message = message, CloudinaryPublicId = string.Empty });
+                }
             }
             else
             {
@@ -62,10 +67,10 @@ namespace RadarrPusherApi.Pusher.Api
             try
             {
                 var commandObject = await _invoker.Invoke(command);
-                
+
                 if (commandObject.SendMessage)
                 {
-                    await SendMessage(channelName, eventName, commandObject.Message, appId, key, secret, cluster);
+                    await SendMessage(channelName, eventName, true, commandObject.Message, appId, key, secret, cluster);
                 }
             }
             catch (Exception e)

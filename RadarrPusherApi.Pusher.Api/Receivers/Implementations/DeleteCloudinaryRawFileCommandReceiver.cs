@@ -46,7 +46,8 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
                     myChannel.Bind(_eventNameReceive, async data =>
                     {
                         string pusherData = data.GetType().GetProperty("data").GetValue(data, null);
-                        var deserializeObject = JsonConvert.DeserializeObject<PusherSendMessageModel>(pusherData);
+                        var pusherReceiveMessageModel = JsonConvert.DeserializeObject<PusherReceiveMessageModel>(pusherData);
+                        var deserializeObject = JsonConvert.DeserializeObject<PusherSendMessageModel>(pusherReceiveMessageModel.Message);
 
                         if (deserializeObject.Command == CommandType.DeleteCloudinaryRawFileCommand)
                         {
