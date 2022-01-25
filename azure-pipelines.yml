@@ -1,19 +1,77 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+name: Build & Test
 
 trigger:
-- main
+- dev
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'windows-2022'
+
+variables:
+  - name: solution
+    value: '**/*.sln'
+  - name: buildPlatform
+    value: 'Any CPU'
+  - name: buildConfiguration
+    value: 'Release'
+  - group: Cloudinary
+  - name: var_CloudinaryApiKey
+    value: $(CloudinaryApiKey)
+  - name: var_CloudinaryApiSecret
+    value: $(CloudinaryApiSecret)
+  - name: var_CloudinaryCloudName
+    value: $(CloudinaryCloudName)
+  - group: Pusher
+  - name: var_PusherAppId
+    value: $(PusherAppId)
+  - name: var_PusherCluster
+    value: $(PusherCluster)
+  - name: var_PusherKey
+    value: $(PusherKey)
+  - name: var_PusherSecret
+    value: $(PusherSecret)
+  - group: Radarr
+  - name: var_RadarrApiBaseUrl
+    value: $(RadarrApiBaseUrl)
+  - name: var_RadarrApiKey
+    value: $(RadarrApiKey)
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- task: NuGetToolInstaller@1
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: FileTransform@1
+  displayName: "Transform json for Cloudinary.Api.IntegrationTests"
+  inputs:
+    folderPath: 'RadarrPusherApi.Cloudinary.Api.IntegrationTests\bin\$(BuildConfiguration)\net6.0\'
+    fileType: 'json'
+    targetFiles: 'appsettings.json'
+
+- task: FileTransform@1
+  displayName: "Transform json for Pusher.Api.IntegrationTests"
+  inputs:
+    folderPath: 'RadarrPusherApi.Pusher.Api.IntegrationTests\bin\$(BuildConfiguration)\net6.0\'
+    fileType: 'json'
+    targetFiles: 'appsettings.json'
+
+- task: VSTest@2
+  displayName: "Run xUnit tests"
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\bin\$(BuildConfiguration)\**\RadarrPusherApi.Cloudinary.Api.IntegrationTests.dll
+      **\bin\$(BuildConfiguration)\**\RadarrPusherApi.Common.Tests.dll
+      **\bin\$(BuildConfiguration)\**\RadarrPusherApi.Pusher.Api.IntegrationTests.dll
+      !**\obj\**
+      !**\ref\**
+      !**\xunit.runner.visualstudio.testadapter.dll
+      !**\xunit.runner.visualstudio.dotnetcore.testadapter.dll
+    searchFolder: '$(System.DefaultWorkingDirectory)'
