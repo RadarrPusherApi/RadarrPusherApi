@@ -14,26 +14,8 @@ variables:
   - name: buildConfiguration
     value: 'Release'
   - group: Cloudinary
-  - name: var_CloudinaryApiKey
-    value: $(CloudinaryApiKey)
-  - name: var_CloudinaryApiSecret
-    value: $(CloudinaryApiSecret)
-  - name: var_CloudinaryCloudName
-    value: $(CloudinaryCloudName)
   - group: Pusher
-  - name: var_PusherAppId
-    value: $(PusherAppId)
-  - name: var_PusherCluster
-    value: $(PusherCluster)
-  - name: var_PusherKey
-    value: $(PusherKey)
-  - name: var_PusherSecret
-    value: $(PusherSecret)
   - group: Radarr
-  - name: var_RadarrApiBaseUrl
-    value: $(RadarrApiBaseUrl)
-  - name: var_RadarrApiKey
-    value: $(RadarrApiKey)
 
 steps:
 - task: NuGetToolInstaller@1
