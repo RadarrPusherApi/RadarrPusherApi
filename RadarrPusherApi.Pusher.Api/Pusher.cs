@@ -47,7 +47,7 @@ namespace RadarrPusherApi.Pusher.Api
             }
             else
             {
-                throw new Exception("No default setting saved.");
+                throw new Exception("All the Pusher settings not supplied.");
             }
         }
 
