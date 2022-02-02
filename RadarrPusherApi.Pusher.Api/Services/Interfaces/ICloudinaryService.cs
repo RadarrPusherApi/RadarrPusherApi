@@ -1,6 +1,6 @@
 ﻿namespace RadarrPusherApi.Pusher.Api.Services.Interfaces
 {
-    public interface IDeleteCloudinaryRawFileService
+    public interface ICloudinaryService
     {
         /// <summary>
         /// Delete the cloudinary raw file by public id.

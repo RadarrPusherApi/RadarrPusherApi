@@ -10,7 +10,7 @@ using RadarrPusherApi.Pusher.Api.Receivers.Interfaces;
 
 namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
 {
-    public class GetMoviesCommandReceiver : Pusher, IGetMoviesCommandReceiver
+    public class MovieReceiver : Pusher, IMovieReceiver
     {
         private readonly ILogger _logger;
         private readonly IRadarrClient _radarrClient;
@@ -20,7 +20,7 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
         private readonly string _channelNameSend;
         private readonly string _eventNameSend;
 
-        public GetMoviesCommandReceiver(ILogger logger, IRadarrClient radarrClient, IInvoker invoker, ICloudinaryClient cloudinaryClient) : base(logger, invoker, cloudinaryClient)
+        public MovieReceiver(ILogger logger, IRadarrClient radarrClient, IInvoker invoker, ICloudinaryClient cloudinaryClient) : base(logger, invoker, cloudinaryClient)
         {
             _logger = logger;
             _radarrClient = radarrClient;
@@ -39,7 +39,7 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
         /// <param name="secret">The Pusher secret</param>
         /// <param name="cluster">The Pusher cluster</param>
         /// <returns></returns>
-        public async Task Connect(string appId, string key, string secret, string cluster)
+        public async Task ConnectGetMoviesCommander(string appId, string key, string secret, string cluster)
         {
             try
             {

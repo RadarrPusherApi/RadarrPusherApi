@@ -1,6 +1,6 @@
 ﻿namespace RadarrPusherApi.Pusher.Api.Receivers.Interfaces
 {
-    public interface IWorkerServiceReceiver
+    public interface IWorkerReceiver
     {
         TimeSpan TimeLimit { get; set; }
         string CloudinaryPublicId { get; set; }
@@ -17,13 +17,23 @@
         /// <param name="secret">The Pusher secret</param>
         /// <param name="cluster">The Pusher cluster</param>
         /// <returns></returns>
-        Task Connect(string channelNameReceive, string eventNameReceive, string appId, string key, string secret, string cluster);
+        Task ConnectWorker(string channelNameReceive, string eventNameReceive, string appId, string key, string secret, string cluster);
 
         /// <summary>
         /// Disconnect the worker service.
         /// </summary>
         /// <returns></returns>
-        Task Disconnect();
+        Task DisconnectWorker();
+
+        /// <summary>
+        /// Connect the get worker service version receiver to the Pusher Pub/Sub.
+        /// </summary>
+        /// <param name="appId">The Pusher app id</param>
+        /// <param name="key">The Pusher key</param>
+        /// <param name="secret">The Pusher secret</param>
+        /// <param name="cluster">The Pusher cluster</param>
+        /// <returns></returns>
+        Task ConnectGetWorkerServiceVersionCommander(string appId, string key, string secret, string cluster);
 
         /// <summary>
         /// Send a message to the Pusher Pub/Sub to a specific channel and event.

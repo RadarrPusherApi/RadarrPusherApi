@@ -5,18 +5,18 @@ namespace RadarrPusherApi.WorkerService.Windows
     public class Worker : BackgroundService
     {
         public Worker(IConfiguration configuration,
-            IDeleteCloudinaryRawFileCommandReceiver deleteCloudinaryRawFileCommandReceiver,
-            IGetWorkerServiceVersionCommandReceiver getWorkerServiceVersionCommandReceiver,
-            IGetMoviesCommandReceiver getMoviesCommandReceiver)
+            ICloudinaryReceiver cloudinaryReceiver,
+            IWorkerReceiver workerServiceReceiver,
+            IMovieReceiver movieReceiver)
         {
             var pusherAppId = configuration.GetSection("PusherAppId").Value;
             var pusherKey = configuration.GetSection("PusherKey").Value;
             var pusherSecret = configuration.GetSection("PusherSecret").Value;
             var pusherCluster = configuration.GetSection("PusherCluster").Value;
 
-            getWorkerServiceVersionCommandReceiver.Connect(pusherAppId, pusherKey, pusherSecret, pusherCluster);
-            getMoviesCommandReceiver.Connect(pusherAppId, pusherKey, pusherSecret, pusherCluster);
-            deleteCloudinaryRawFileCommandReceiver.Connect(pusherAppId, pusherKey, pusherSecret, pusherCluster);
+            workerServiceReceiver.ConnectGetWorkerServiceVersionCommander(pusherAppId, pusherKey, pusherSecret, pusherCluster);
+            movieReceiver.ConnectGetMoviesCommander(pusherAppId, pusherKey, pusherSecret, pusherCluster);
+            cloudinaryReceiver.ConnectDeleteCloudinaryFileCommander(pusherAppId, pusherKey, pusherSecret, pusherCluster);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

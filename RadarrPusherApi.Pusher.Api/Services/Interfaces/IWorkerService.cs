@@ -2,7 +2,7 @@
 
 namespace RadarrPusherApi.Pusher.Api.Services.Interfaces
 {
-    public interface IGetWorkerServiceVersionService
+    public interface IWorkerService
     {
         /// <summary>
         /// Returns the Worker Service version.

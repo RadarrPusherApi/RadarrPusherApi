@@ -10,19 +10,19 @@ using System.Diagnostics;
 
 namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 {
-    public class GetMoviesService : IGetMoviesService
+    public class MovieService : Interfaces.IMovieService
     {
         private readonly ILogger _logger;
-        private readonly IWorkerServiceReceiver _workerServiceReceiver;
+        private readonly IWorkerReceiver _workerReceiver;
         private readonly ICloudinaryClient _cloudinaryClient;
-        private readonly IDeleteCloudinaryRawFileService _deleteCloudinaryRawFileService;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public GetMoviesService(ILogger logger, IWorkerServiceReceiver workerServiceReceiver, ICloudinaryClient cloudinaryClient, IDeleteCloudinaryRawFileService deleteCloudinaryRawFileService)
+        public MovieService(ILogger logger, IWorkerReceiver workerReceiver, ICloudinaryClient cloudinaryClient, ICloudinaryService cloudinaryService)
         {
             _logger = logger;
-            _workerServiceReceiver = workerServiceReceiver;
+            _workerReceiver = workerReceiver;
             _cloudinaryClient = cloudinaryClient;
-            _deleteCloudinaryRawFileService = deleteCloudinaryRawFileService;
+            _cloudinaryService = cloudinaryService;
         }
 
         /// <summary>
@@ -41,33 +41,33 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 
             try
             {
-                await _workerServiceReceiver.Connect(channelNameReceive, eventNameReceive, pusherAppId, pusherKey, pusherSecret, pusherCluster);
+                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive, pusherAppId, pusherKey, pusherSecret, pusherCluster);
                 
                 var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.GetMoviesCommand, SendMessageChanelGuid = chanelGuid.ToString() };
-                await _workerServiceReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage), pusherAppId, pusherKey, pusherSecret, pusherCluster);
+                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage), pusherAppId, pusherKey, pusherSecret, pusherCluster);
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                while (!_workerServiceReceiver.CommandCompleted || stopwatch.ElapsedMilliseconds > _workerServiceReceiver.TimeLimit.TotalMilliseconds)
+                while (!_workerReceiver.CommandCompleted || stopwatch.ElapsedMilliseconds > _workerReceiver.TimeLimit.TotalMilliseconds)
                 {
-                    if (stopwatch.ElapsedMilliseconds > _workerServiceReceiver.TimeLimit.TotalMilliseconds)
+                    if (stopwatch.ElapsedMilliseconds > _workerReceiver.TimeLimit.TotalMilliseconds)
                     {
                         stopwatch.Stop();
                         throw new Exception("Get movies took too long!");
                     }
                 }
 
-                if (_workerServiceReceiver.CommandCompleted)
+                if (_workerReceiver.CommandCompleted)
                 {
-                    if (string.IsNullOrWhiteSpace(_workerServiceReceiver.ReturnData))
+                    if (string.IsNullOrWhiteSpace(_workerReceiver.ReturnData))
                     {
                         throw new Exception("Get movies has no return data!");
                     }
 
-                    var responseContent = await _cloudinaryClient.DownloadRawFile(_workerServiceReceiver.ReturnData);
+                    var responseContent = await _cloudinaryClient.DownloadRawFile(_workerReceiver.ReturnData);
 
-                    await _deleteCloudinaryRawFileService.DeleteCloudinaryRawFile(pusherAppId, pusherKey, pusherSecret, pusherCluster, _workerServiceReceiver.CloudinaryPublicId);
+                    await _cloudinaryService.DeleteCloudinaryRawFile(pusherAppId, pusherKey, pusherSecret, pusherCluster, _workerReceiver.CloudinaryPublicId);
 
                     if (string.IsNullOrWhiteSpace(responseContent))
                     {
@@ -83,7 +83,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
             }
             finally
             {
-                await _workerServiceReceiver.Disconnect();
+                await _workerReceiver.DisconnectWorker();
             }
 
             return movies;

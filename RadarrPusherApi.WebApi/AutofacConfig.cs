@@ -21,9 +21,10 @@ namespace RadarrPusherApi.WebApi
             builder.Register(c => new Logger(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "RadarrPusherApi.WebApi.SQLite.db3"))).As<Common.Logger.Interfaces.ILogger>().SingleInstance();
             builder.RegisterType<Invoker>().As<IInvoker>().SingleInstance();
             builder.Register(c => new CloudinaryClient(cloudinaryCloudName, cloudinaryApiKey, cloudinaryApiSecret)).As<ICloudinaryClient>().SingleInstance();
-            builder.RegisterType<DeleteCloudinaryRawFileService>().As<IDeleteCloudinaryRawFileService>().SingleInstance();
-            builder.RegisterType<WorkerServiceReceiver>().As<IWorkerServiceReceiver>().SingleInstance();
-            builder.RegisterType<GetWorkerServiceVersionService>().As<IGetWorkerServiceVersionService>().SingleInstance();
+            builder.RegisterType<CloudinaryService>().As<ICloudinaryService>().SingleInstance();
+            builder.RegisterType<CloudinaryService>().As<CloudinaryService>().SingleInstance();
+            builder.RegisterType<WorkerReceiver>().As<IWorkerReceiver>().SingleInstance();
+            builder.RegisterType<WorkerService>().As<IWorkerService>().SingleInstance();
 
         }
     }

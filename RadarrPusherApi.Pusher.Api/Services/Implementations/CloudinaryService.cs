@@ -7,15 +7,15 @@ using RadarrPusherApi.Pusher.Api.Services.Interfaces;
 
 namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 {
-    public class DeleteCloudinaryRawFileService : IDeleteCloudinaryRawFileService
+    public class CloudinaryService : ICloudinaryService
     {
         private readonly ILogger _logger;
-        private readonly IWorkerServiceReceiver _workerServiceReceiver;
+        private readonly IWorkerReceiver _workerReceiver;
 
-        public DeleteCloudinaryRawFileService(ILogger logger, IWorkerServiceReceiver workerServiceReceiver)
+        public CloudinaryService(ILogger logger, IWorkerReceiver workerReceiver)
         {
             _logger = logger;
-            _workerServiceReceiver = workerServiceReceiver;
+            _workerReceiver = workerReceiver;
         }
 
         /// <summary>
@@ -31,10 +31,10 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
             
             try
             {
-                await _workerServiceReceiver.Connect(channelNameReceive, eventNameReceive, pusherAppId, pusherKey, pusherSecret, pusherCluster);
+                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive, pusherAppId, pusherKey, pusherSecret, pusherCluster);
 
                 var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.DeleteCloudinaryRawFileCommand, Values = JsonConvert.SerializeObject(publicId) };
-                await _workerServiceReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage), pusherAppId, pusherKey, pusherSecret, pusherCluster);
+                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage), pusherAppId, pusherKey, pusherSecret, pusherCluster);
             }
             catch (Exception ex)
             {

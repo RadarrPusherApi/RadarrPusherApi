@@ -29,9 +29,9 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<IInvoker, Invoker>();
         services.AddSingleton<IRadarrClient, RadarrClient>(serviceProvider => new RadarrClient(restClient));
 
-        services.AddSingleton<IDeleteCloudinaryRawFileCommandReceiver, DeleteCloudinaryRawFileCommandReceiver>();
-        services.AddSingleton<IGetWorkerServiceVersionCommandReceiver, GetWorkerServiceVersionCommandReceiver>();
-        services.AddSingleton<IGetMoviesCommandReceiver, GetMoviesCommandReceiver>();
+        services.AddSingleton<ICloudinaryReceiver, CloudinaryReceiver>();
+        services.AddSingleton<IWorkerReceiver, WorkerReceiver>();
+        services.AddSingleton<IMovieReceiver, MovieReceiver>();
     })
     .Build();
 

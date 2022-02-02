@@ -12,11 +12,11 @@ namespace RadarrPusherApi.WebApi.Controllers
         private readonly string _pusherKey;
         private readonly string _pusherSecret;
         private readonly string _pusherCluster;
-        private readonly IGetWorkerServiceVersionService _getWorkerServiceVersionService;
+        private readonly IWorkerService _workerService;
 
-        public WorkerServiceVersionController(IConfiguration configuration, IGetWorkerServiceVersionService getWorkerServiceVersionService)
+        public WorkerServiceVersionController(IConfiguration configuration, IWorkerService workerService)
         {
-            _getWorkerServiceVersionService = getWorkerServiceVersionService;
+            _workerService = workerService;
 
             _pusherAppId = configuration.GetSection("PusherAppId").Value;
             _pusherKey = configuration.GetSection("PusherKey").Value;
@@ -27,7 +27,7 @@ namespace RadarrPusherApi.WebApi.Controllers
         [HttpGet(Name = "GetWorkerServiceVersion")]
         public async Task<WorkerServiceVersionModel> Get()
         {
-            return await _getWorkerServiceVersionService.GetWorkerServiceVersionServiceAsync(_pusherAppId, _pusherKey, _pusherSecret, _pusherCluster);
+            return await _workerService.GetWorkerServiceVersionServiceAsync(_pusherAppId, _pusherKey, _pusherSecret, _pusherCluster);
         }
     }
 }

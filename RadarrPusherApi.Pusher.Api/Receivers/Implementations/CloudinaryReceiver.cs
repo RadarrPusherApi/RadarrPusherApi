@@ -9,7 +9,7 @@ using RadarrPusherApi.Pusher.Api.Receivers.Interfaces;
 
 namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
 {
-    public class DeleteCloudinaryRawFileCommandReceiver : Pusher, IDeleteCloudinaryRawFileCommandReceiver
+    public class CloudinaryReceiver : Pusher, ICloudinaryReceiver
     {
         private readonly ILogger _logger;
         private readonly ICloudinaryClient _cloudinaryClient;
@@ -17,7 +17,7 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
         private readonly string _channelNameReceive;
         private readonly string _eventNameReceive;
 
-        public DeleteCloudinaryRawFileCommandReceiver(ILogger logger, IInvoker invoker, ICloudinaryClient cloudinaryClient) : base(logger, invoker, cloudinaryClient)
+        public CloudinaryReceiver(ILogger logger, IInvoker invoker, ICloudinaryClient cloudinaryClient) : base(logger, invoker, cloudinaryClient)
         {
             _logger = logger;
             _cloudinaryClient = cloudinaryClient;
@@ -34,7 +34,7 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
         /// <param name="secret">The Pusher secret</param>
         /// <param name="cluster">The Pusher cluster</param>
         /// <returns></returns>
-        public async Task Connect(string appId, string key, string secret, string cluster)
+        public async Task ConnectDeleteCloudinaryFileCommander(string appId, string key, string secret, string cluster)
         {
             try
             {
