@@ -28,10 +28,10 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
         /// <summary>
         /// Returns the Worker Service version.
         /// </summary>
-        /// <returns>Returns WorkerServiceVersionModel</returns>
-        public async Task<WorkerServiceVersionModel> GetWorkerServiceVersionServiceAsync(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster)
+        /// <returns>Returns the WorkerService Version</returns>
+        public async Task<Version> GetWorkerServiceVersionServiceAsync(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster)
         {
-            WorkerServiceVersionModel workerServiceVersion = null;
+            Version version = null;
 
             var chanelGuid = Guid.NewGuid();
             var channelNameReceive = $"{ CommandType.GetWorkerServiceVersionCommand }{ PusherChannel.ApiChannel}_{chanelGuid}";
@@ -73,7 +73,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
                         throw new Exception("Get movies cloudinary response has no return data!");
                     }
 
-                    workerServiceVersion = JsonConvert.DeserializeObject<WorkerServiceVersionModel>(responseContent);
+                    version = JsonConvert.DeserializeObject<Version>(responseContent);
                 }
             }
             catch (Exception ex)
@@ -85,7 +85,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
                 await _workerReceiver.DisconnectWorker();
             }
 
-            return workerServiceVersion;
+            return version;
         }
     }
 }

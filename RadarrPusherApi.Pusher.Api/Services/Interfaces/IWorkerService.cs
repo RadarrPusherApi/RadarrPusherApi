@@ -7,7 +7,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Interfaces
         /// <summary>
         /// Returns the Worker Service version.
         /// </summary>
-        /// <returns>Returns a WorkerServiceVersionModel</returns>
-        Task<WorkerServiceVersionModel> GetWorkerServiceVersionServiceAsync(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster);
+        /// <returns>Returns the WorkerService Version</returns>
+        Task<Version> GetWorkerServiceVersionServiceAsync(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster);
     }
 }

@@ -31,7 +31,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
         /// <returns>Returns a list of Movies</returns>
         public async Task<IList<Movie>> GetMoviesServiceAsync(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster)
         {
-            IList<Movie>? movies = null;
+            IList<Movie> movies = null;
 
             var chanelGuid = Guid.NewGuid();
             var channelNameReceive = $"{ CommandType.GetMoviesCommand }{ PusherChannel.ApiChannel}_{chanelGuid}";

@@ -12,7 +12,7 @@ namespace RadarrPusherApi.Common.Command.Implementations.Commands
         /// <summary>
         /// Returns the Worker Service version.
         /// </summary>
-        /// <returns>Returns a WorkerServiceVersionModel</returns>
+        /// <returns>Returns WorkerService Version</returns>
         public async Task<CommandObject> Execute()
         {
             var commandObject = new CommandObject();
@@ -21,7 +21,7 @@ namespace RadarrPusherApi.Common.Command.Implementations.Commands
             var currentApp = Path.Combine(currentAppPath, $"{AppName}.dll");
             var assemblyName = AssemblyName.GetAssemblyName(currentApp);
 
-            var commandData = new WorkerServiceVersionModel { Version = assemblyName.Version };
+            var commandData = assemblyName.Version ;
 
 
             commandObject.SendMessage = true;

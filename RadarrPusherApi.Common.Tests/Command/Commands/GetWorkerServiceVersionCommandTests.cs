@@ -20,11 +20,11 @@ namespace RadarrPusherApi.Common.Tests.Command.Commands
             // Act
             var commandData = await _getWorkerServiceVersionCommand.Execute();
 
-            var version = JsonConvert.DeserializeObject<WorkerServiceVersionModel>(commandData.Message);
+            var version = JsonConvert.DeserializeObject<Version>(commandData.Message);
 
             // Assert
             Assert.NotNull(version);
-            Assert.Equal(new Version("1.0.0.0"), version.Version);
+            Assert.Equal(new Version("1.0.0.0"), version);
         }
     }
 }

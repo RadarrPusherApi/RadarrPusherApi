@@ -35,7 +35,7 @@ namespace RadarrPusherApi.Pusher.Api.IntegrationTests
 
             // Assert
             Assert.NotNull(version);
-            Assert.Equal(new Version("1.0.0.0"), version.Version);
+            Assert.Equal(new Version("1.0.0.0"), version);
         }
     }
 }
