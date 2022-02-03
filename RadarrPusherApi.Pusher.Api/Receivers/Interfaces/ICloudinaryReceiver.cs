@@ -3,7 +3,7 @@
     public interface ICloudinaryReceiver
     {
         /// <summary>
-        /// Connect the delete cloudinary raw file command receiver to the Pusher Pub/Sub.
+        /// Connect the delete Cloudinary file command receiver to the Pusher Pub/Sub.
         /// </summary>
         /// <param name="appId">The Pusher app id</param>
         /// <param name="key">The Pusher key</param>

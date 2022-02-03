@@ -10,7 +10,7 @@ using RadarrPusherApi.Pusher.Api.Receivers.Interfaces;
 
 namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
 {
-    public class MovieReceiver : Pusher, IMovieReceiver
+    public class MoviesReceiver : Pusher, IMoviesReceiver
     {
         private readonly ILogger _logger;
         private readonly IRadarrClient _radarrClient;
@@ -20,7 +20,7 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
         private readonly string _channelNameSend;
         private readonly string _eventNameSend;
 
-        public MovieReceiver(ILogger logger, IRadarrClient radarrClient, IInvoker invoker, ICloudinaryClient cloudinaryClient) : base(logger, invoker, cloudinaryClient)
+        public MoviesReceiver(ILogger logger, IRadarrClient radarrClient, IInvoker invoker, ICloudinaryClient cloudinaryClient) : base(logger, invoker, cloudinaryClient)
         {
             _logger = logger;
             _radarrClient = radarrClient;

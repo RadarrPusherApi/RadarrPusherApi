@@ -1,6 +1,6 @@
 ﻿namespace RadarrPusherApi.Pusher.Api.Receivers.Interfaces
 {
-    public interface IMovieReceiver
+    public interface IMoviesReceiver
     {
         /// <summary>
         /// Connect the get movies command receiver to the Pusher Pub/Sub.

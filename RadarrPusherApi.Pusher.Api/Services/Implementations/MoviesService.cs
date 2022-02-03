@@ -10,14 +10,14 @@ using System.Diagnostics;
 
 namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 {
-    public class MovieService : Interfaces.IMovieService
+    public class MoviesService : IMoviesService
     {
         private readonly ILogger _logger;
         private readonly IWorkerReceiver _workerReceiver;
         private readonly ICloudinaryClient _cloudinaryClient;
         private readonly ICloudinaryService _cloudinaryService;
 
-        public MovieService(ILogger logger, IWorkerReceiver workerReceiver, ICloudinaryClient cloudinaryClient, ICloudinaryService cloudinaryService)
+        public MoviesService(ILogger logger, IWorkerReceiver workerReceiver, ICloudinaryClient cloudinaryClient, ICloudinaryService cloudinaryService)
         {
             _logger = logger;
             _workerReceiver = workerReceiver;

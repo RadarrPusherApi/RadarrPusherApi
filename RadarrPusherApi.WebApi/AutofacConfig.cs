@@ -25,7 +25,7 @@ namespace RadarrPusherApi.WebApi
             builder.RegisterType<CloudinaryService>().As<CloudinaryService>().SingleInstance();
             builder.RegisterType<WorkerReceiver>().As<IWorkerReceiver>().SingleInstance();
             builder.RegisterType<WorkerService>().As<IWorkerService>().SingleInstance();
-            builder.RegisterType<MovieService>().As<IMovieService>().SingleInstance();
+            builder.RegisterType<MoviesService>().As<IMoviesService>().SingleInstance();
 
         }
     }

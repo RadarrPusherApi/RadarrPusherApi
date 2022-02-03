@@ -2,7 +2,7 @@
 
 namespace RadarrPusherApi.Pusher.Api.Services.Interfaces
 {
-    public interface IMovieService
+    public interface IMoviesService
     {
         /// <summary>
         /// Returns the movies from Radarr.

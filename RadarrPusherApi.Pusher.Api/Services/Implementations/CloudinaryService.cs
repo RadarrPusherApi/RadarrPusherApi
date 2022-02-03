@@ -19,7 +19,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
         }
 
         /// <summary>
-        /// Delete the cloudinary raw file by public id.
+        /// Delete the Cloudinary file by public id.
         /// </summary>
         /// <returns></returns>
         public async Task DeleteCloudinaryRawFile(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster, string publicId)

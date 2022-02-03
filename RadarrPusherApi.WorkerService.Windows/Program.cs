@@ -31,7 +31,7 @@ var host = Host.CreateDefaultBuilder(args)
 
         services.AddSingleton<ICloudinaryReceiver, CloudinaryReceiver>();
         services.AddSingleton<IWorkerReceiver, WorkerReceiver>();
-        services.AddSingleton<IMovieReceiver, MovieReceiver>();
+        services.AddSingleton<IMoviesReceiver, MoviesReceiver>();
     })
     .Build();
 

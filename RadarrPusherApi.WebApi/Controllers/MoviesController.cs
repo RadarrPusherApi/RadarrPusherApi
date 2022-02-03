@@ -5,17 +5,17 @@ namespace RadarrPusherApi.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class MovieController : ControllerBase
+    public class MoviesController : ControllerBase
     {
         private readonly string _pusherAppId;
         private readonly string _pusherKey;
         private readonly string _pusherSecret;
         private readonly string _pusherCluster;
-        private readonly Pusher.Api.Services.Interfaces.IMovieService _movieService;
+        private readonly Pusher.Api.Services.Interfaces.IMoviesService _moviesService;
 
-        public MovieController(IConfiguration configuration, Pusher.Api.Services.Interfaces.IMovieService movieService)
+        public MoviesController(IConfiguration configuration, Pusher.Api.Services.Interfaces.IMoviesService moviesService)
         {
-            _movieService = movieService;
+            _moviesService = moviesService;
 
             _pusherAppId = configuration.GetSection("PusherAppId").Value;
             _pusherKey = configuration.GetSection("PusherKey").Value;
@@ -26,7 +26,7 @@ namespace RadarrPusherApi.WebApi.Controllers
         [HttpGet(Name = "GetMovies")]
         public async Task<IList<Movie>> Get()
         {
-            return await _movieService.GetMoviesServiceAsync(_pusherAppId, _pusherKey, _pusherSecret, _pusherCluster);
+            return await _moviesService.GetMoviesServiceAsync(_pusherAppId, _pusherKey, _pusherSecret, _pusherCluster);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace RadarrPusherApi.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WorkerServiceVersionController : ControllerBase
+    public class WorkerServiceController : ControllerBase
     {
         private readonly string _pusherAppId;
         private readonly string _pusherKey;
@@ -14,7 +14,7 @@ namespace RadarrPusherApi.WebApi.Controllers
         private readonly string _pusherCluster;
         private readonly IWorkerService _workerService;
 
-        public WorkerServiceVersionController(IConfiguration configuration, IWorkerService workerService)
+        public WorkerServiceController(IConfiguration configuration, IWorkerService workerService)
         {
             _workerService = workerService;
 

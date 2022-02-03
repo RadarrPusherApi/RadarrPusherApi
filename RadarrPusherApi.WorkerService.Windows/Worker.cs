@@ -7,7 +7,7 @@ namespace RadarrPusherApi.WorkerService.Windows
         public Worker(IConfiguration configuration,
             ICloudinaryReceiver cloudinaryReceiver,
             IWorkerReceiver workerServiceReceiver,
-            IMovieReceiver movieReceiver)
+            IMoviesReceiver movieReceiver)
         {
             var pusherAppId = configuration.GetSection("PusherAppId").Value;
             var pusherKey = configuration.GetSection("PusherKey").Value;
