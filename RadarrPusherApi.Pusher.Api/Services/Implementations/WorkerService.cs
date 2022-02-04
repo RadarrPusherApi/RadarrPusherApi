@@ -2,7 +2,6 @@
 using RadarrPusherApi.Cloudinary.Api;
 using RadarrPusherApi.Common.Enums;
 using RadarrPusherApi.Common.Logger.Interfaces;
-using RadarrPusherApi.Common.Models;
 using RadarrPusherApi.Pusher.Api.Models;
 using RadarrPusherApi.Pusher.Api.Receivers.Interfaces;
 using RadarrPusherApi.Pusher.Api.Services.Interfaces;
@@ -29,7 +28,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
         /// Returns the Worker Service version.
         /// </summary>
         /// <returns>Returns the WorkerService Version</returns>
-        public async Task<Version> GetWorkerServiceVersionServiceAsync(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster)
+        public async Task<Version> GetWorkerServiceVersionServiceAsync()
         {
             Version version = null;
 
@@ -41,10 +40,10 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 
             try
             {
-                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive, pusherAppId, pusherKey, pusherSecret, pusherCluster);
+                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive);
 
                 var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.WorkerServiceCommand, SendMessageChanelGuid = chanelGuid.ToString() };
-                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage), pusherAppId, pusherKey, pusherSecret, pusherCluster);
+                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage));
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -66,7 +65,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 
                     var responseContent = await _cloudinaryClient.DownloadRawFile(_workerReceiver.ReturnData);
 
-                    await _cloudinaryService.DeleteCloudinaryRawFile(pusherAppId, pusherKey, pusherSecret, pusherCluster, _workerReceiver.CloudinaryPublicId);
+                    await _cloudinaryService.DeleteCloudinaryRawFile(_workerReceiver.CloudinaryPublicId);
 
                     if (string.IsNullOrWhiteSpace(responseContent))
                     {

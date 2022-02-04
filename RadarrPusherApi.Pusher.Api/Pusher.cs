@@ -1,6 +1,7 @@
 ﻿using RadarrPusherApi.Cloudinary.Api;
 using RadarrPusherApi.Common.Command.Interfaces;
 using RadarrPusherApi.Common.Logger.Interfaces;
+using RadarrPusherApi.Common.Models;
 
 namespace RadarrPusherApi.Pusher.Api
 {
@@ -9,12 +10,19 @@ namespace RadarrPusherApi.Pusher.Api
         private readonly ILogger _logger;
         private readonly IInvoker _invoker;
         private readonly ICloudinaryClient _cloudinaryClient;
+        private readonly IPusherSettings _pusherSettings;
 
-        public Pusher(ILogger logger, IInvoker invoker, ICloudinaryClient cloudinaryClient)
+        public Pusher(ILogger logger, IInvoker invoker, ICloudinaryClient cloudinaryClient, IPusherSettings pusherSettings)
         {
             _logger = logger;
             _invoker = invoker;
             _cloudinaryClient = cloudinaryClient;
+            _pusherSettings = pusherSettings;
+
+            if (string.IsNullOrWhiteSpace(_pusherSettings.PusherAppId) || string.IsNullOrWhiteSpace(_pusherSettings.PusherKey) || string.IsNullOrWhiteSpace(_pusherSettings.PusherSecret) || string.IsNullOrWhiteSpace(_pusherSettings.PusherCluster))
+            {
+                throw new Exception("All the Pusher settings not supplied.");
+            }
         }
 
         /// <summary>
@@ -28,26 +36,19 @@ namespace RadarrPusherApi.Pusher.Api
         /// <param name="secret">The Pusher secret</param>
         /// <param name="cluster">The Pusher cluster</param>
         /// <returns></returns>
-        public async Task SendMessage(string channelName, string eventName, bool useCloudinary, string message, string appId, string key, string secret, string cluster)
+        public async Task SendMessage(string channelName, string eventName, bool useCloudinary, string message)
         {
-            if (!string.IsNullOrWhiteSpace(appId) && !string.IsNullOrWhiteSpace(key) && !string.IsNullOrWhiteSpace(secret) && !string.IsNullOrWhiteSpace(cluster))
-            {
-                var pusherSend = new PusherServer.Pusher(appId, key, secret, new PusherServer.PusherOptions { Cluster = cluster });
+            var pusherSend = new PusherServer.Pusher(_pusherSettings.PusherAppId, _pusherSettings.PusherKey, _pusherSettings.PusherSecret, new PusherServer.PusherOptions { Cluster = _pusherSettings.PusherCluster });
 
-                if (useCloudinary)
-                {
-                    var cloudinaryPublicId = Guid.NewGuid().ToString();
-                    var url = await _cloudinaryClient.UploadRawFile(message, cloudinaryPublicId);
-                    await pusherSend.TriggerAsync(channelName, eventName, new { Message = url, CloudinaryPublicId = cloudinaryPublicId });
-                }
-                else
-                {
-                    await pusherSend.TriggerAsync(channelName, eventName, new { Message = message, CloudinaryPublicId = string.Empty });
-                }
+            if (useCloudinary)
+            {
+                var cloudinaryPublicId = Guid.NewGuid().ToString();
+                var url = await _cloudinaryClient.UploadRawFile(message, cloudinaryPublicId);
+                await pusherSend.TriggerAsync(channelName, eventName, new { Message = url, CloudinaryPublicId = cloudinaryPublicId });
             }
             else
             {
-                throw new Exception("All the Pusher settings not supplied.");
+                await pusherSend.TriggerAsync(channelName, eventName, new { Message = message, CloudinaryPublicId = string.Empty });
             }
         }
 
@@ -62,7 +63,7 @@ namespace RadarrPusherApi.Pusher.Api
         /// <param name="secret">The Pusher secret</param>
         /// <param name="cluster">The Pusher cluster</param>
         /// <returns></returns>
-        public async Task ExecuteCommand(ICommand command, string channelName, string eventName, string appId, string key, string secret, string cluster)
+        public async Task ExecuteCommand(ICommand command, string channelName, string eventName)
         {
             try
             {
@@ -70,7 +71,7 @@ namespace RadarrPusherApi.Pusher.Api
 
                 if (commandObject.SendMessage)
                 {
-                    await SendMessage(channelName, eventName, true, commandObject.Message, appId, key, secret, cluster);
+                    await SendMessage(channelName, eventName, true, commandObject.Message);
                 }
             }
             catch (Exception e)

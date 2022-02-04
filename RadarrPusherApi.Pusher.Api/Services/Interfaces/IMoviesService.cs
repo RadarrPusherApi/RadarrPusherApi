@@ -8,12 +8,12 @@ namespace RadarrPusherApi.Pusher.Api.Services.Interfaces
         /// Returns the movies from Radarr.
         /// </summary>
         /// <returns>Returns a list of Movies</returns>
-        Task<IList<Movie>> GetMoviesServiceAsync(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster);
+        Task<IList<Movie>> GetMoviesServiceAsync();
 
         /// <summary>
         /// Returns a movie from Radarr.
         /// </summary>
         /// <returns>Returns a Movie</returns>
-        Task<Movie> GetMovieServiceAsync(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster, int id);
+        Task<Movie> GetMovieServiceAsync(int id);
     }
 }

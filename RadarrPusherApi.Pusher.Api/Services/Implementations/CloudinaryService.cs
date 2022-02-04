@@ -22,7 +22,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
         /// Delete the Cloudinary file by public id.
         /// </summary>
         /// <returns></returns>
-        public async Task DeleteCloudinaryRawFile(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster, string publicId)
+        public async Task DeleteCloudinaryRawFile(string publicId)
         {
             var channelNameReceive = $"{ CommandType.CloudinaryCommand }{ PusherChannel.ApiChannel}";
             var eventNameReceive = $"{ CommandType.CloudinaryCommand }{ PusherEvent.ApiEvent}";
@@ -31,10 +31,10 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
             
             try
             {
-                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive, pusherAppId, pusherKey, pusherSecret, pusherCluster);
+                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive);
 
                 var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.CloudinaryCommand, Values = JsonConvert.SerializeObject(publicId) };
-                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage), pusherAppId, pusherKey, pusherSecret, pusherCluster);
+                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage));
             }
             catch (Exception ex)
             {

@@ -19,21 +19,21 @@ namespace RadarrPusherApi.Pusher.Api.IntegrationTests
         {
             _commonHelper = commonHelper;
             _outputHelper = outputHelper;
-            _cloudinaryReceiver = new CloudinaryReceiver(commonHelper.Logger, commonHelper.Invoker, commonHelper.CloudinaryClient);
-            _moviesReceiver = new MoviesReceiver(commonHelper.Logger, commonHelper.RadarrClient, commonHelper.Invoker, commonHelper.CloudinaryClient);
+            _cloudinaryReceiver = new CloudinaryReceiver(commonHelper.Logger, commonHelper.Invoker, commonHelper.CloudinaryClient, _commonHelper.PusherSettings);
+            _moviesReceiver = new MoviesReceiver(commonHelper.Logger, commonHelper.RadarrClient, commonHelper.Invoker, commonHelper.CloudinaryClient, _commonHelper.PusherSettings);
         }
 
         [Fact]
         public async Task GetMovies()
         {
             // Arrange
-            await _cloudinaryReceiver.ConnectDeleteCloudinaryFileCommander(_commonHelper.Settings.PusherAppId, _commonHelper.Settings.PusherKey, _commonHelper.Settings.PusherSecret, _commonHelper.Settings.PusherCluster);
-            await _moviesReceiver.ConnectGetMoviesCommander(_commonHelper.Settings.PusherAppId, _commonHelper.Settings.PusherKey, _commonHelper.Settings.PusherSecret, _commonHelper.Settings.PusherCluster);
+            await _cloudinaryReceiver.ConnectDeleteCloudinaryFileCommander();
+            await _moviesReceiver.ConnectGetMoviesCommander();
             var cloudinaryService = new CloudinaryService(_commonHelper.Logger, _commonHelper.WorkerReceiver);
             var moviesService = new MoviesService(_commonHelper.Logger, _commonHelper.WorkerReceiver, _commonHelper.CloudinaryClient, cloudinaryService);
 
             // Act
-            var movies = await moviesService.GetMoviesServiceAsync(_commonHelper.Settings.PusherAppId, _commonHelper.Settings.PusherKey, _commonHelper.Settings.PusherSecret, _commonHelper.Settings.PusherCluster);
+            var movies = await moviesService.GetMoviesServiceAsync();
 
             // Assert
             Assert.NotNull(movies);

@@ -6,6 +6,6 @@
         /// Delete the Cloudinary file by public id.
         /// </summary>
         /// <returns></returns>
-        Task DeleteCloudinaryRawFile(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster, string publicId);
+        Task DeleteCloudinaryRawFile(string publicId);
     }
 }

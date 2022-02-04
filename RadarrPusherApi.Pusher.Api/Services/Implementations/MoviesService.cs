@@ -29,7 +29,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
         /// Returns the movies from Radarr.
         /// </summary>
         /// <returns>Returns a list of Movies</returns>
-        public async Task<IList<Movie>> GetMoviesServiceAsync(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster)
+        public async Task<IList<Movie>> GetMoviesServiceAsync()
         {
             IList<Movie> movies = null;
 
@@ -41,10 +41,10 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 
             try
             {
-                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive, pusherAppId, pusherKey, pusherSecret, pusherCluster);
+                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive);
                 
                 var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.MoviesCommand, SendMessageChanelGuid = chanelGuid.ToString() };
-                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage), pusherAppId, pusherKey, pusherSecret, pusherCluster);
+                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage));
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -67,7 +67,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 
                     var responseContent = await _cloudinaryClient.DownloadRawFile(_workerReceiver.ReturnData);
 
-                    await _cloudinaryService.DeleteCloudinaryRawFile(pusherAppId, pusherKey, pusherSecret, pusherCluster, _workerReceiver.CloudinaryPublicId);
+                    await _cloudinaryService.DeleteCloudinaryRawFile(_workerReceiver.CloudinaryPublicId);
 
                     if (string.IsNullOrWhiteSpace(responseContent))
                     {
@@ -93,7 +93,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
         /// Returns a movie from Radarr.
         /// </summary>
         /// <returns>Returns a Movie</returns>
-        public async Task<Movie> GetMovieServiceAsync(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster, int id)
+        public async Task<Movie> GetMovieServiceAsync(int id)
         {
             Movie movie = null;
 
@@ -105,10 +105,10 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 
             try
             {
-                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive, pusherAppId, pusherKey, pusherSecret, pusherCluster);
+                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive);
 
                 var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.MoviesCommand, SendMessageChanelGuid = chanelGuid.ToString(), Values = JsonConvert.SerializeObject(id)};
-                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage), pusherAppId, pusherKey, pusherSecret, pusherCluster);
+                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage));
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -131,7 +131,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 
                     var responseContent = await _cloudinaryClient.DownloadRawFile(_workerReceiver.ReturnData);
 
-                    await _cloudinaryService.DeleteCloudinaryRawFile(pusherAppId, pusherKey, pusherSecret, pusherCluster, _workerReceiver.CloudinaryPublicId);
+                    await _cloudinaryService.DeleteCloudinaryRawFile(_workerReceiver.CloudinaryPublicId);
 
                     if (string.IsNullOrWhiteSpace(responseContent))
                     {

@@ -4,6 +4,7 @@ using RadarrPusherApi.Common.Command.Implementations.Commands;
 using RadarrPusherApi.Common.Command.Interfaces;
 using RadarrPusherApi.Common.Enums;
 using RadarrPusherApi.Common.Logger.Interfaces;
+using RadarrPusherApi.Common.Models;
 using RadarrPusherApi.Pusher.Api.Models;
 using RadarrPusherApi.Pusher.Api.Receivers.Interfaces;
 
@@ -12,24 +13,33 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
     public class WorkerReceiver : Pusher, IWorkerReceiver
     {
         private readonly ILogger _logger;
+        private readonly IPusherSettings _pusherSettings;
+
         public TimeSpan TimeLimit { get; set; }
         public string CloudinaryPublicId { get; set; }
         public bool CommandCompleted { get; set; }
         public string ReturnData { get; set; }
         private PusherClient.Pusher _pusherReceive;
+
         private readonly string _channelNameReceive;
         private readonly string _eventNameReceive;
         private readonly string _channelNameSend;
         private readonly string _eventNameSend;
 
-        public WorkerReceiver(ILogger logger, IInvoker invoker, ICloudinaryClient cloudinaryClient) : base(logger, invoker, cloudinaryClient)
+        public WorkerReceiver(ILogger logger, IInvoker invoker, ICloudinaryClient cloudinaryClient, IPusherSettings pusherSettings) : base(logger, invoker, cloudinaryClient, pusherSettings)
         {
             _logger = logger;
+            _pusherSettings = pusherSettings;
 
             _channelNameReceive = $"{ CommandType.WorkerServiceCommand }{ PusherChannel.WorkerServiceChannel }";
             _eventNameReceive = $"{ CommandType.WorkerServiceCommand }{ PusherEvent.WorkerServiceEvent }";
             _channelNameSend = $"{ CommandType.WorkerServiceCommand }{ PusherChannel.ApiChannel }";
             _eventNameSend = $"{ CommandType.WorkerServiceCommand }{ PusherEvent.ApiEvent }";
+
+            if (string.IsNullOrWhiteSpace(_pusherSettings.PusherAppId) || string.IsNullOrWhiteSpace(_pusherSettings.PusherKey) || string.IsNullOrWhiteSpace(_pusherSettings.PusherSecret) || string.IsNullOrWhiteSpace(_pusherSettings.PusherCluster))
+            {
+                throw new Exception("All the Pusher settings not supplied.");
+            }
         }
 
         /// <summary>
@@ -37,12 +47,8 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
         /// </summary>
         /// <param name="channelNameReceive">The channel name to connect to</param>
         /// <param name="eventNameReceive">The event name to connect to</param>
-        /// <param name="appId">The Pusher app id</param>
-        /// <param name="key">The Pusher key</param>
-        /// <param name="secret">The Pusher secret</param>
-        /// <param name="cluster">The Pusher cluster</param>
         /// <returns></returns>
-        public async Task ConnectWorker(string channelNameReceive, string eventNameReceive, string appId, string key, string secret, string cluster)
+        public async Task ConnectWorker(string channelNameReceive, string eventNameReceive)
         {
             try
             {
@@ -51,28 +57,21 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
                 ReturnData = string.Empty;
                 _pusherReceive = null;
 
-                if (!string.IsNullOrWhiteSpace(appId) && !string.IsNullOrWhiteSpace(key) && !string.IsNullOrWhiteSpace(secret) && !string.IsNullOrWhiteSpace(cluster))
+                _pusherReceive = new PusherClient.Pusher(_pusherSettings.PusherKey, new PusherClient.PusherOptions { Cluster = _pusherSettings.PusherCluster });
+
+                TimeLimit = new TimeSpan(0, 0, 15);
+                var myChannel = await _pusherReceive.SubscribeAsync(channelNameReceive);
+                myChannel.Bind(eventNameReceive, data =>
                 {
-                    _pusherReceive = new PusherClient.Pusher(key, new PusherClient.PusherOptions { Cluster = cluster });
+                    string pusherData = data.GetType().GetProperty("data").GetValue(data, null);
+                    var deserializeObject = JsonConvert.DeserializeObject<PusherReceiveMessageModel>(pusherData);
 
-                    TimeLimit = new TimeSpan(0, 0, 15);
-                    var myChannel = await _pusherReceive.SubscribeAsync(channelNameReceive);
-                    myChannel.Bind(eventNameReceive, data =>
-                    {
-                        string pusherData = data.GetType().GetProperty("data").GetValue(data, null);
-                        var deserializeObject = JsonConvert.DeserializeObject<PusherReceiveMessageModel>(pusherData);
+                    ReturnData = deserializeObject.Message;
+                    CloudinaryPublicId = deserializeObject.CloudinaryPublicId;
+                    CommandCompleted = true;
+                });
 
-                        ReturnData = deserializeObject.Message;
-                        CloudinaryPublicId = deserializeObject.CloudinaryPublicId;
-                        CommandCompleted = true;
-                    });
-
-                    await _pusherReceive.ConnectAsync();
-                }
-                else
-                {
-                    throw new Exception("No default setting saved.");
-                }
+                await _pusherReceive.ConnectAsync();
             }
             catch (Exception e)
             {
@@ -99,34 +98,27 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
         /// <param name="secret">The Pusher secret</param>
         /// <param name="cluster">The Pusher cluster</param>
         /// <returns></returns>
-        public async Task ConnectGetWorkerServiceVersionCommander(string appId, string key, string secret, string cluster)
+        public async Task ConnectGetWorkerServiceVersionCommander()
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(appId) && !string.IsNullOrWhiteSpace(key) && !string.IsNullOrWhiteSpace(secret) && !string.IsNullOrWhiteSpace(cluster))
-                {
-                    var pusherReceive = new PusherClient.Pusher(key, new PusherClient.PusherOptions { Cluster = cluster });
+                var pusherReceive = new PusherClient.Pusher(_pusherSettings.PusherKey, new PusherClient.PusherOptions { Cluster = _pusherSettings.PusherCluster });
 
-                    var myChannel = await pusherReceive.SubscribeAsync(_channelNameReceive);
-                    myChannel.Bind(_eventNameReceive, async data =>
+                var myChannel = await pusherReceive.SubscribeAsync(_channelNameReceive);
+                myChannel.Bind(_eventNameReceive, async data =>
+                {
+                    string pusherData = data.GetType().GetProperty("data").GetValue(data, null);
+                    var pusherReceiveMessageModel = JsonConvert.DeserializeObject<PusherReceiveMessageModel>(pusherData);
+                    var deserializeObject = JsonConvert.DeserializeObject<PusherSendMessageModel>(pusherReceiveMessageModel.Message);
+
+                    if (deserializeObject.Command == CommandType.WorkerServiceCommand)
                     {
-                        string pusherData = data.GetType().GetProperty("data").GetValue(data, null);
-                        var pusherReceiveMessageModel = JsonConvert.DeserializeObject<PusherReceiveMessageModel>(pusherData);
-                        var deserializeObject = JsonConvert.DeserializeObject<PusherSendMessageModel>(pusherReceiveMessageModel.Message);
+                        var command = new GetWorkerServiceVersionCommand();
+                        await ExecuteCommand(command, $"{_channelNameSend}_{deserializeObject.SendMessageChanelGuid}", _eventNameSend);
+                    }
+                });
 
-                        if (deserializeObject.Command == CommandType.WorkerServiceCommand)
-                        {
-                            var command = new GetWorkerServiceVersionCommand();
-                            await ExecuteCommand(command, $"{_channelNameSend}_{deserializeObject.SendMessageChanelGuid}", _eventNameSend, appId, key, secret, cluster);
-                        }
-                    });
-
-                    await pusherReceive.ConnectAsync();
-                }
-                else
-                {
-                    throw new Exception("No default setting saved.");
-                }
+                await pusherReceive.ConnectAsync();
             }
             catch (Exception e)
             {
