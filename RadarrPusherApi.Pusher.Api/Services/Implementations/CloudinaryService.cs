@@ -12,10 +12,20 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
         private readonly ILogger _logger;
         private readonly IWorkerReceiver _workerReceiver;
 
+        private readonly string _channelNameReceive;
+        private readonly string _eventNameReceive;
+        private readonly string _channelNameSend;
+        private readonly string _eventNameSend;
+
         public CloudinaryService(ILogger logger, IWorkerReceiver workerReceiver)
         {
             _logger = logger;
             _workerReceiver = workerReceiver;
+
+            _channelNameReceive = $"{ServiceType.Cloudinary}{PusherChannel.ApiChannel}";
+            _eventNameReceive = $"{ServiceType.Cloudinary}{PusherEvent.ApiEvent}";
+            _channelNameSend = $"{ServiceType.Cloudinary}{PusherChannel.WorkerServiceChannel}";
+            _eventNameSend = $"{ServiceType.Cloudinary}{PusherEvent.WorkerServiceEvent}";
         }
 
         /// <summary>
@@ -24,17 +34,12 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
         /// <returns></returns>
         public async Task DeleteCloudinaryRawFile(string publicId)
         {
-            var channelNameReceive = $"{ CommandType.CloudinaryCommand }{ PusherChannel.ApiChannel}";
-            var eventNameReceive = $"{ CommandType.CloudinaryCommand }{ PusherEvent.ApiEvent}";
-            var channelNameSend = $"{ CommandType.CloudinaryCommand }{ PusherChannel.WorkerServiceChannel}";
-            var eventNameSend = $"{ CommandType.CloudinaryCommand }{ PusherEvent.WorkerServiceEvent}";
-            
             try
             {
-                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive);
+                await _workerReceiver.ConnectWorker(_channelNameReceive, _eventNameReceive);
 
-                var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.CloudinaryCommand, Values = JsonConvert.SerializeObject(publicId) };
-                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage));
+                var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.DeleteCloudinaryRawFileCommand, Values = JsonConvert.SerializeObject(publicId) };
+                await _workerReceiver.SendMessage(_channelNameSend, $"{_eventNameSend}_{CommandType.DeleteCloudinaryRawFileCommand}", false, JsonConvert.SerializeObject(pusherSendMessage));
             }
             catch (Exception ex)
             {

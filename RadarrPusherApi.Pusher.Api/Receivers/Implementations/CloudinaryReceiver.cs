@@ -25,8 +25,8 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
             _cloudinaryClient = cloudinaryClient;
             _pusherSettings = pusherSettings;
 
-            _channelNameReceive = $"{ CommandType.CloudinaryCommand }{ PusherChannel.WorkerServiceChannel }";
-            _eventNameReceive = $"{ CommandType.CloudinaryCommand }{ PusherEvent.WorkerServiceEvent }";
+            _channelNameReceive = $"{ServiceType.Cloudinary}{PusherChannel.WorkerServiceChannel}";
+            _eventNameReceive = $"{ServiceType.Cloudinary}{PusherEvent.WorkerServiceEvent}";
 
             if (string.IsNullOrWhiteSpace(_pusherSettings.PusherAppId) || string.IsNullOrWhiteSpace(_pusherSettings.PusherKey) || string.IsNullOrWhiteSpace(_pusherSettings.PusherSecret) || string.IsNullOrWhiteSpace(_pusherSettings.PusherCluster))
             {
@@ -45,13 +45,13 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
                 var pusherReceive = new PusherClient.Pusher(_pusherSettings.PusherKey, new PusherClient.PusherOptions { Cluster = _pusherSettings.PusherCluster });
 
                 var myChannel = await pusherReceive.SubscribeAsync(_channelNameReceive);
-                myChannel.Bind(_eventNameReceive, async data =>
+                myChannel.Bind($"{_eventNameReceive}_{CommandType.DeleteCloudinaryRawFileCommand}", async data =>
                 {
                     string pusherData = data.GetType().GetProperty("data").GetValue(data, null);
                     var pusherReceiveMessageModel = JsonConvert.DeserializeObject<PusherReceiveMessageModel>(pusherData);
                     var deserializeObject = JsonConvert.DeserializeObject<PusherSendMessageModel>(pusherReceiveMessageModel.Message);
 
-                    if (deserializeObject.Command == CommandType.CloudinaryCommand)
+                    if (deserializeObject.Command == CommandType.DeleteCloudinaryRawFileCommand)
                     {
                         var command = new DeleteCloudinaryRawFileCommand(_cloudinaryClient, JsonConvert.DeserializeObject<string>(deserializeObject.Values));
                         await ExecuteCommand(command, null, null);

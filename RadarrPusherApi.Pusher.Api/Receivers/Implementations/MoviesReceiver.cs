@@ -28,10 +28,10 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
             _radarrClient = radarrClient;
             _pusherSettings = pusherSettings;
 
-            _channelNameReceive = $"{ CommandType.MoviesCommand }{ PusherChannel.WorkerServiceChannel }";
-            _eventNameReceive = $"{ CommandType.MoviesCommand }{ PusherEvent.WorkerServiceEvent }";
-            _channelNameSend = $"{ CommandType.MoviesCommand }{ PusherChannel.ApiChannel }";
-            _eventNameSend = $"{ CommandType.MoviesCommand }{ PusherEvent.ApiEvent }";
+            _channelNameReceive = $"{ ServiceType.Movies }{ PusherChannel.WorkerServiceChannel }";
+            _eventNameReceive = $"{ ServiceType.Movies }{ PusherEvent.WorkerServiceEvent }";
+            _channelNameSend = $"{ ServiceType.Movies }{ PusherChannel.ApiChannel }";
+            _eventNameSend = $"{ ServiceType.Movies }{ PusherEvent.ApiEvent }";
 
             if (string.IsNullOrWhiteSpace(_pusherSettings.PusherAppId) || string.IsNullOrWhiteSpace(_pusherSettings.PusherKey) || string.IsNullOrWhiteSpace(_pusherSettings.PusherSecret) || string.IsNullOrWhiteSpace(_pusherSettings.PusherCluster))
             {
@@ -50,13 +50,13 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
                 var pusherReceive = new PusherClient.Pusher(_pusherSettings.PusherKey, new PusherClient.PusherOptions { Cluster = _pusherSettings.PusherCluster });
 
                 var myChannel = await pusherReceive.SubscribeAsync(_channelNameReceive);
-                myChannel.Bind(_eventNameReceive, async data =>
+                myChannel.Bind($"{_eventNameReceive}_{CommandType.GetMoviesCommand}", async data =>
                 {
                     string pusherData = data.GetType().GetProperty("data").GetValue(data, null);
                     var pusherReceiveMessageModel = JsonConvert.DeserializeObject<PusherReceiveMessageModel>(pusherData);
                     var deserializeObject = JsonConvert.DeserializeObject<PusherSendMessageModel>(pusherReceiveMessageModel.Message);
 
-                    if (deserializeObject.Command == CommandType.MoviesCommand)
+                    if (deserializeObject.Command == CommandType.GetMoviesCommand)
                     {
                         var command = new GetMoviesCommand(_radarrClient);
                         await ExecuteCommand(command, $"{_channelNameSend}_{deserializeObject.SendMessageChanelGuid}", _eventNameSend);
@@ -82,13 +82,13 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
                 var pusherReceive = new PusherClient.Pusher(_pusherSettings.PusherKey, new PusherClient.PusherOptions { Cluster = _pusherSettings.PusherCluster });
 
                 var myChannel = await pusherReceive.SubscribeAsync(_channelNameReceive);
-                myChannel.Bind(_eventNameReceive, async data =>
+                myChannel.Bind($"{_eventNameReceive}_{CommandType.GetMovieCommand}", async data =>
                 {
                     string pusherData = data.GetType().GetProperty("data").GetValue(data, null);
                     var pusherReceiveMessageModel = JsonConvert.DeserializeObject<PusherReceiveMessageModel>(pusherData);
                     var deserializeObject = JsonConvert.DeserializeObject<PusherSendMessageModel>(pusherReceiveMessageModel.Message);
 
-                    if (deserializeObject.Command == CommandType.MoviesCommand)
+                    if (deserializeObject.Command == CommandType.GetMovieCommand)
                     {
                         var id = JsonConvert.DeserializeObject<int>(deserializeObject.Values);
                         var command = new GetMovieCommand(_radarrClient, id);

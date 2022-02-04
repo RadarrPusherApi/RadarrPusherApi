@@ -17,12 +17,22 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
         private readonly ICloudinaryClient _cloudinaryClient;
         private readonly ICloudinaryService _cloudinaryService;
 
+        private readonly string _channelNameReceive;
+        private readonly string _eventNameReceive;
+        private readonly string _channelNameSend;
+        private readonly string _eventNameSend;
+
         public MoviesService(ILogger logger, IWorkerReceiver workerReceiver, ICloudinaryClient cloudinaryClient, ICloudinaryService cloudinaryService)
         {
             _logger = logger;
             _workerReceiver = workerReceiver;
             _cloudinaryClient = cloudinaryClient;
             _cloudinaryService = cloudinaryService;
+
+            _channelNameReceive = $"{ServiceType.Movies }{ PusherChannel.ApiChannel}";
+            _eventNameReceive = $"{ServiceType.Movies }{PusherEvent.ApiEvent}";
+            _channelNameSend = $"{ServiceType.Movies}{ PusherChannel.WorkerServiceChannel}";
+            _eventNameSend = $"{ ServiceType.Movies }{ PusherEvent.WorkerServiceEvent}";
         }
 
         /// <summary>
@@ -34,17 +44,13 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
             IList<Movie> movies = null;
 
             var chanelGuid = Guid.NewGuid();
-            var channelNameReceive = $"{ CommandType.MoviesCommand }{ PusherChannel.ApiChannel}_{chanelGuid}";
-            var eventNameReceive = $"{ CommandType.MoviesCommand }{ PusherEvent.ApiEvent}";
-            var channelNameSend = $"{ CommandType.MoviesCommand }{ PusherChannel.WorkerServiceChannel}";
-            var eventNameSend = $"{ CommandType.MoviesCommand }{ PusherEvent.WorkerServiceEvent}";
 
             try
             {
-                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive);
-                
-                var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.MoviesCommand, SendMessageChanelGuid = chanelGuid.ToString() };
-                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage));
+                await _workerReceiver.ConnectWorker($"{_channelNameReceive}_{chanelGuid}", _eventNameReceive);
+
+                var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.GetMoviesCommand, SendMessageChanelGuid = chanelGuid.ToString() };
+                await _workerReceiver.SendMessage(_channelNameSend, $"{_eventNameSend}_{CommandType.GetMoviesCommand}", false, JsonConvert.SerializeObject(pusherSendMessage));
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -98,17 +104,13 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
             Movie movie = null;
 
             var chanelGuid = Guid.NewGuid();
-            var channelNameReceive = $"{ CommandType.MoviesCommand }{ PusherChannel.ApiChannel}_{chanelGuid}";
-            var eventNameReceive = $"{ CommandType.MoviesCommand }{ PusherEvent.ApiEvent}";
-            var channelNameSend = $"{ CommandType.MoviesCommand }{ PusherChannel.WorkerServiceChannel}";
-            var eventNameSend = $"{ CommandType.MoviesCommand }{ PusherEvent.WorkerServiceEvent}";
 
             try
             {
-                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive);
+                await _workerReceiver.ConnectWorker($"{_channelNameReceive}_{chanelGuid}", _eventNameReceive);
 
-                var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.MoviesCommand, SendMessageChanelGuid = chanelGuid.ToString(), Values = JsonConvert.SerializeObject(id)};
-                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage));
+                var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.GetMovieCommand, SendMessageChanelGuid = chanelGuid.ToString(), Values = JsonConvert.SerializeObject(id)};
+                await _workerReceiver.SendMessage(_channelNameSend, $"{_eventNameSend}_{CommandType.GetMovieCommand}", false, JsonConvert.SerializeObject(pusherSendMessage));
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
