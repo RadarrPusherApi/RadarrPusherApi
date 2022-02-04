@@ -23,10 +23,19 @@ namespace RadarrPusherApi.WebApi.Controllers
             _pusherCluster = configuration.GetSection("PusherCluster").Value;
         }
 
-        [HttpGet(Name = "GetMovies")]
-        public async Task<IList<Movie>> Get()
+        [HttpGet]
+        [Route("")]
+        public async Task<IList<Movie>> GetMovies()
         {
             return await _moviesService.GetMoviesServiceAsync(_pusherAppId, _pusherKey, _pusherSecret, _pusherCluster);
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+
+        public async Task<Movie> GetMovie(int id)
+        {
+            return await _moviesService.GetMovieServiceAsync(_pusherAppId, _pusherKey, _pusherSecret, _pusherCluster, id);
         }
     }
 }

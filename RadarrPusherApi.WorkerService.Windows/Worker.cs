@@ -16,6 +16,7 @@ namespace RadarrPusherApi.WorkerService.Windows
 
             workerServiceReceiver.ConnectGetWorkerServiceVersionCommander(pusherAppId, pusherKey, pusherSecret, pusherCluster);
             movieReceiver.ConnectGetMoviesCommander(pusherAppId, pusherKey, pusherSecret, pusherCluster);
+            movieReceiver.ConnectGetMovieCommander(pusherAppId, pusherKey, pusherSecret, pusherCluster);
             cloudinaryReceiver.ConnectDeleteCloudinaryFileCommander(pusherAppId, pusherKey, pusherSecret, pusherCluster);
         }
 
