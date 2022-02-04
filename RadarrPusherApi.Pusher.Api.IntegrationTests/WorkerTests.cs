@@ -27,8 +27,8 @@ namespace RadarrPusherApi.Pusher.Api.IntegrationTests
             // Arrange
             await _cloudinaryReceiver.ConnectDeleteCloudinaryFileCommander();
             await _workerReceiver.ConnectGetWorkerServiceVersionCommander();
-            var cloudinaryService = new CloudinaryService(_commonHelper.Logger, _commonHelper.WorkerReceiver);
-            var workerService = new WorkerService(_commonHelper.Logger, _commonHelper.WorkerReceiver, _commonHelper.CloudinaryClient, cloudinaryService);
+            var cloudinaryService = new CloudinaryService(_commonHelper.Logger, _commonHelper.WorkerConnector);
+            var workerService = new WorkerService(_commonHelper.Logger, _commonHelper.WorkerConnector, _commonHelper.CloudinaryClient, cloudinaryService);
 
             // Act
             var version = await workerService.GetWorkerServiceVersionServiceAsync();

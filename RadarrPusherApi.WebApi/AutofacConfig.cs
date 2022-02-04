@@ -27,9 +27,8 @@ namespace RadarrPusherApi.WebApi
             builder.RegisterType<Invoker>().As<IInvoker>().SingleInstance();
             builder.Register(c => new CloudinaryClient(cloudinaryCloudName, cloudinaryApiKey, cloudinaryApiSecret)).As<ICloudinaryClient>().SingleInstance();
             builder.Register(c => new PusherSettings(pusherAppId, pusherKey, pusherSecret, pusherCluster)).As<IPusherSettings>().SingleInstance();
+            builder.RegisterType<WorkerConnector>().As<IWorkerConnector>().SingleInstance();
             builder.RegisterType<CloudinaryService>().As<ICloudinaryService>().SingleInstance();
-            builder.RegisterType<CloudinaryService>().As<CloudinaryService>().SingleInstance();
-            builder.RegisterType<WorkerReceiver>().As<IWorkerReceiver>().SingleInstance();
             builder.RegisterType<WorkerService>().As<IWorkerService>().SingleInstance();
             builder.RegisterType<MoviesService>().As<IMoviesService>().SingleInstance();
 

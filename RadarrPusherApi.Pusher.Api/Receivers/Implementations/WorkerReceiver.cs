@@ -14,13 +14,7 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
     {
         private readonly ILogger _logger;
         private readonly IPusherSettings _pusherSettings;
-
-        public TimeSpan TimeLimit { get; set; }
-        public string CloudinaryPublicId { get; set; }
-        public bool CommandCompleted { get; set; }
-        public string ReturnData { get; set; }
-        private PusherClient.Pusher _pusherReceive;
-
+        
         private readonly string _channelNameReceive;
         private readonly string _eventNameReceive;
         private readonly string _channelNameSend;
@@ -40,54 +34,6 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
             {
                 throw new Exception("All the Pusher settings not supplied.");
             }
-        }
-
-        /// <summary>
-        /// Connect the worker service receiver to the Pusher Pub/Sub to a specific channel and event.
-        /// </summary>
-        /// <param name="channelNameReceive">The channel name to connect to</param>
-        /// <param name="eventNameReceive">The event name to connect to</param>
-        /// <returns></returns>
-        public async Task ConnectWorker(string channelNameReceive, string eventNameReceive)
-        {
-            try
-            {
-                CloudinaryPublicId = string.Empty;
-                CommandCompleted = false;
-                ReturnData = string.Empty;
-                _pusherReceive = null;
-
-                _pusherReceive = new PusherClient.Pusher(_pusherSettings.PusherKey, new PusherClient.PusherOptions { Cluster = _pusherSettings.PusherCluster });
-
-                TimeLimit = new TimeSpan(0, 0, 15);
-                var myChannel = await _pusherReceive.SubscribeAsync(channelNameReceive);
-                myChannel.Bind(eventNameReceive, data =>
-                {
-                    string pusherData = data.GetType().GetProperty("data").GetValue(data, null);
-                    var deserializeObject = JsonConvert.DeserializeObject<PusherReceiveMessageModel>(pusherData);
-
-                    ReturnData = deserializeObject.Message;
-                    CloudinaryPublicId = deserializeObject.CloudinaryPublicId;
-                    CommandCompleted = true;
-                });
-
-                await _pusherReceive.ConnectAsync();
-            }
-            catch (Exception e)
-            {
-                await _logger.LogErrorAsync(e.Message, e.StackTrace);
-            }
-        }
-
-        /// <summary>
-        /// Disconnect the worker service.
-        /// </summary>
-        /// <returns></returns>
-        public async Task DisconnectWorker()
-        {
-            await _pusherReceive.DisconnectAsync();
-            _pusherReceive = null;
-            ReturnData = null;
         }
 
         /// <summary>

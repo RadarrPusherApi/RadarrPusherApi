@@ -29,8 +29,8 @@ namespace RadarrPusherApi.Pusher.Api.IntegrationTests
             // Arrange
             await _cloudinaryReceiver.ConnectDeleteCloudinaryFileCommander();
             await _moviesReceiver.ConnectGetMoviesCommander();
-            var cloudinaryService = new CloudinaryService(_commonHelper.Logger, _commonHelper.WorkerReceiver);
-            var moviesService = new MoviesService(_commonHelper.Logger, _commonHelper.WorkerReceiver, _commonHelper.CloudinaryClient, cloudinaryService);
+            var cloudinaryService = new CloudinaryService(_commonHelper.Logger, _commonHelper.WorkerConnector);
+            var moviesService = new MoviesService(_commonHelper.Logger, _commonHelper.WorkerConnector, _commonHelper.CloudinaryClient, cloudinaryService);
 
             // Act
             var movies = await moviesService.GetMoviesServiceAsync();

@@ -22,7 +22,7 @@ namespace RadarrPusherApi.Pusher.Api.IntegrationTests.Common.Helpers
         public IInvoker Invoker { get; }
         public ILogger Logger { get; }
         public ICloudinaryClient CloudinaryClient { get; }
-        public IWorkerReceiver WorkerReceiver { get; }
+        public IWorkerConnector WorkerConnector { get; }
         public IPusherSettings PusherSettings { get; }
 
         public CommonHelper()
@@ -41,7 +41,7 @@ namespace RadarrPusherApi.Pusher.Api.IntegrationTests.Common.Helpers
             Logger = new Logger(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RadarrPusherApi.Pusher.Api.IntegrationTests.SQLite.db3"));
             CloudinaryClient = new CloudinaryClient(Settings.CloudinaryCloudName, Settings.CloudinaryApiKey, Settings.CloudinaryApiSecret);
             PusherSettings = new PusherSettings(Settings.PusherAppId, Settings.PusherKey, Settings.PusherSecret, Settings.PusherCluster);
-            WorkerReceiver = new WorkerReceiver(Logger, Invoker, CloudinaryClient, PusherSettings);
+            WorkerConnector = new WorkerConnector(Logger, Invoker, CloudinaryClient, PusherSettings);
         }
     }
 }

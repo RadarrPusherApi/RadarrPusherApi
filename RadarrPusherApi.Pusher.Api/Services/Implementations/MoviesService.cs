@@ -13,7 +13,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
     public class MoviesService : IMoviesService
     {
         private readonly ILogger _logger;
-        private readonly IWorkerReceiver _workerReceiver;
+        private readonly IWorkerConnector _workerConnector;
         private readonly ICloudinaryClient _cloudinaryClient;
         private readonly ICloudinaryService _cloudinaryService;
 
@@ -22,10 +22,10 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
         private readonly string _channelNameSend;
         private readonly string _eventNameSend;
 
-        public MoviesService(ILogger logger, IWorkerReceiver workerReceiver, ICloudinaryClient cloudinaryClient, ICloudinaryService cloudinaryService)
+        public MoviesService(ILogger logger, IWorkerConnector workerConnector, ICloudinaryClient cloudinaryClient, ICloudinaryService cloudinaryService)
         {
             _logger = logger;
-            _workerReceiver = workerReceiver;
+            _workerConnector = workerConnector;
             _cloudinaryClient = cloudinaryClient;
             _cloudinaryService = cloudinaryService;
 
@@ -47,33 +47,33 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 
             try
             {
-                await _workerReceiver.ConnectWorker($"{_channelNameReceive}_{chanelGuid}", _eventNameReceive);
+                await _workerConnector.ConnectWorker($"{_channelNameReceive}_{chanelGuid}", _eventNameReceive);
 
                 var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.GetMoviesCommand, SendMessageChanelGuid = chanelGuid.ToString() };
-                await _workerReceiver.SendMessage(_channelNameSend, $"{_eventNameSend}_{CommandType.GetMoviesCommand}", false, JsonConvert.SerializeObject(pusherSendMessage));
+                await _workerConnector.SendMessage(_channelNameSend, $"{_eventNameSend}_{CommandType.GetMoviesCommand}", false, JsonConvert.SerializeObject(pusherSendMessage));
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                while (!_workerReceiver.CommandCompleted || stopwatch.ElapsedMilliseconds > _workerReceiver.TimeLimit.TotalMilliseconds)
+                while (!_workerConnector.CommandCompleted || stopwatch.ElapsedMilliseconds > _workerConnector.TimeLimit.TotalMilliseconds)
                 {
-                    if (stopwatch.ElapsedMilliseconds > _workerReceiver.TimeLimit.TotalMilliseconds)
+                    if (stopwatch.ElapsedMilliseconds > _workerConnector.TimeLimit.TotalMilliseconds)
                     {
                         stopwatch.Stop();
                         throw new Exception("Get movies took too long!");
                     }
                 }
 
-                if (_workerReceiver.CommandCompleted)
+                if (_workerConnector.CommandCompleted)
                 {
-                    if (string.IsNullOrWhiteSpace(_workerReceiver.ReturnData))
+                    if (string.IsNullOrWhiteSpace(_workerConnector.ReturnData))
                     {
                         throw new Exception("Get movies has no return data!");
                     }
 
-                    var responseContent = await _cloudinaryClient.DownloadRawFile(_workerReceiver.ReturnData);
+                    var responseContent = await _cloudinaryClient.DownloadRawFile(_workerConnector.ReturnData);
 
-                    await _cloudinaryService.DeleteCloudinaryRawFile(_workerReceiver.CloudinaryPublicId);
+                    await _cloudinaryService.DeleteCloudinaryRawFile(_workerConnector.CloudinaryPublicId);
 
                     if (string.IsNullOrWhiteSpace(responseContent))
                     {
@@ -89,7 +89,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
             }
             finally
             {
-                await _workerReceiver.DisconnectWorker();
+                await _workerConnector.DisconnectWorker();
             }
 
             return movies;
@@ -107,33 +107,33 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 
             try
             {
-                await _workerReceiver.ConnectWorker($"{_channelNameReceive}_{chanelGuid}", _eventNameReceive);
+                await _workerConnector.ConnectWorker($"{_channelNameReceive}_{chanelGuid}", _eventNameReceive);
 
                 var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.GetMovieCommand, SendMessageChanelGuid = chanelGuid.ToString(), Values = JsonConvert.SerializeObject(id)};
-                await _workerReceiver.SendMessage(_channelNameSend, $"{_eventNameSend}_{CommandType.GetMovieCommand}", false, JsonConvert.SerializeObject(pusherSendMessage));
+                await _workerConnector.SendMessage(_channelNameSend, $"{_eventNameSend}_{CommandType.GetMovieCommand}", false, JsonConvert.SerializeObject(pusherSendMessage));
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                while (!_workerReceiver.CommandCompleted || stopwatch.ElapsedMilliseconds > _workerReceiver.TimeLimit.TotalMilliseconds)
+                while (!_workerConnector.CommandCompleted || stopwatch.ElapsedMilliseconds > _workerConnector.TimeLimit.TotalMilliseconds)
                 {
-                    if (stopwatch.ElapsedMilliseconds > _workerReceiver.TimeLimit.TotalMilliseconds)
+                    if (stopwatch.ElapsedMilliseconds > _workerConnector.TimeLimit.TotalMilliseconds)
                     {
                         stopwatch.Stop();
                         throw new Exception("Get movies took too long!");
                     }
                 }
 
-                if (_workerReceiver.CommandCompleted)
+                if (_workerConnector.CommandCompleted)
                 {
-                    if (string.IsNullOrWhiteSpace(_workerReceiver.ReturnData))
+                    if (string.IsNullOrWhiteSpace(_workerConnector.ReturnData))
                     {
                         throw new Exception("Get movies has no return data!");
                     }
 
-                    var responseContent = await _cloudinaryClient.DownloadRawFile(_workerReceiver.ReturnData);
+                    var responseContent = await _cloudinaryClient.DownloadRawFile(_workerConnector.ReturnData);
 
-                    await _cloudinaryService.DeleteCloudinaryRawFile(_workerReceiver.CloudinaryPublicId);
+                    await _cloudinaryService.DeleteCloudinaryRawFile(_workerConnector.CloudinaryPublicId);
 
                     if (string.IsNullOrWhiteSpace(responseContent))
                     {
@@ -149,7 +149,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
             }
             finally
             {
-                await _workerReceiver.DisconnectWorker();
+                await _workerConnector.DisconnectWorker();
             }
 
             return movie;
