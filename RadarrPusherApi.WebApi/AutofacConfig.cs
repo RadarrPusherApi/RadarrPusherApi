@@ -23,14 +23,17 @@ namespace RadarrPusherApi.WebApi
             var pusherSecret = configuration.GetSection("PusherSecret").Value;
             var pusherCluster = configuration.GetSection("PusherCluster").Value;
 
-            builder.Register(c => new Logger(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "RadarrPusherApi.WebApi.SQLite.db3"))).As<Common.Logger.Interfaces.ILogger>().SingleInstance();
-            builder.RegisterType<Invoker>().As<IInvoker>().SingleInstance();
             builder.Register(c => new CloudinaryClient(cloudinaryCloudName, cloudinaryApiKey, cloudinaryApiSecret)).As<ICloudinaryClient>().SingleInstance();
             builder.Register(c => new PusherSettings(pusherAppId, pusherKey, pusherSecret, pusherCluster)).As<IPusherSettings>().SingleInstance();
-            builder.RegisterType<WorkerConnector>().As<IWorkerConnector>().SingleInstance();
-            builder.RegisterType<CloudinaryService>().As<ICloudinaryService>().SingleInstance();
-            builder.RegisterType<WorkerService>().As<IWorkerService>().SingleInstance();
-            builder.RegisterType<MoviesService>().As<IMoviesService>().SingleInstance();
+
+            builder.Register(c => new Logger(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "RadarrPusherApi.WebApi.SQLite.db3"))).As<Common.Logger.Interfaces.ILogger>().SingleInstance();
+            builder.RegisterType<Invoker>().As<IInvoker>().SingleInstance();
+
+            builder.RegisterType<WorkerConnector>().As<IWorkerConnector>().InstancePerDependency();
+
+            builder.RegisterType<CloudinaryService>().As<ICloudinaryService>().InstancePerDependency();
+            builder.RegisterType<WorkerService>().As<IWorkerService>().InstancePerDependency();
+            builder.RegisterType<MoviesService>().As<IMoviesService>().InstancePerDependency();
 
         }
     }
