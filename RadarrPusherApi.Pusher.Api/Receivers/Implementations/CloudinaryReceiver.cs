@@ -22,8 +22,8 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
             _logger = logger;
             _cloudinaryClient = cloudinaryClient;
 
-            _channelNameReceive = $"{ CommandType.DeleteCloudinaryRawFileCommand }{ PusherChannel.WorkerServiceChannel }";
-            _eventNameReceive = $"{ CommandType.DeleteCloudinaryRawFileCommand }{ PusherEvent.WorkerServiceEvent }";
+            _channelNameReceive = $"{ CommandType.CloudinaryCommand }{ PusherChannel.WorkerServiceChannel }";
+            _eventNameReceive = $"{ CommandType.CloudinaryCommand }{ PusherEvent.WorkerServiceEvent }";
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
                         var pusherReceiveMessageModel = JsonConvert.DeserializeObject<PusherReceiveMessageModel>(pusherData);
                         var deserializeObject = JsonConvert.DeserializeObject<PusherSendMessageModel>(pusherReceiveMessageModel.Message);
 
-                        if (deserializeObject.Command == CommandType.DeleteCloudinaryRawFileCommand)
+                        if (deserializeObject.Command == CommandType.CloudinaryCommand)
                         {
                             var command = new DeleteCloudinaryRawFileCommand(_cloudinaryClient, JsonConvert.DeserializeObject<string>(deserializeObject.Values));
                             await ExecuteCommand(command, null, null, appId, key, secret, cluster);

@@ -34,16 +34,16 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
             Version version = null;
 
             var chanelGuid = Guid.NewGuid();
-            var channelNameReceive = $"{ CommandType.GetWorkerServiceVersionCommand }{ PusherChannel.ApiChannel}_{chanelGuid}";
-            var eventNameReceive = $"{ CommandType.GetWorkerServiceVersionCommand }{ PusherEvent.ApiEvent}";
-            var channelNameSend = $"{ CommandType.GetWorkerServiceVersionCommand }{ PusherChannel.WorkerServiceChannel}";
-            var eventNameSend = $"{ CommandType.GetWorkerServiceVersionCommand }{ PusherEvent.WorkerServiceEvent}";
+            var channelNameReceive = $"{ CommandType.WorkerServiceCommand }{ PusherChannel.ApiChannel}_{chanelGuid}";
+            var eventNameReceive = $"{ CommandType.WorkerServiceCommand }{ PusherEvent.ApiEvent}";
+            var channelNameSend = $"{ CommandType.WorkerServiceCommand }{ PusherChannel.WorkerServiceChannel}";
+            var eventNameSend = $"{ CommandType.WorkerServiceCommand }{ PusherEvent.WorkerServiceEvent}";
 
             try
             {
                 await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive, pusherAppId, pusherKey, pusherSecret, pusherCluster);
 
-                var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.GetWorkerServiceVersionCommand, SendMessageChanelGuid = chanelGuid.ToString() };
+                var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.WorkerServiceCommand, SendMessageChanelGuid = chanelGuid.ToString() };
                 await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage), pusherAppId, pusherKey, pusherSecret, pusherCluster);
 
                 var stopwatch = new Stopwatch();

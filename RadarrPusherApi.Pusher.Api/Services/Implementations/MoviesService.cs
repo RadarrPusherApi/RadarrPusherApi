@@ -34,16 +34,16 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
             IList<Movie> movies = null;
 
             var chanelGuid = Guid.NewGuid();
-            var channelNameReceive = $"{ CommandType.GetMoviesCommand }{ PusherChannel.ApiChannel}_{chanelGuid}";
-            var eventNameReceive = $"{ CommandType.GetMoviesCommand }{ PusherEvent.ApiEvent}";
-            var channelNameSend = $"{ CommandType.GetMoviesCommand }{ PusherChannel.WorkerServiceChannel}";
-            var eventNameSend = $"{ CommandType.GetMoviesCommand }{ PusherEvent.WorkerServiceEvent}";
+            var channelNameReceive = $"{ CommandType.MoviesCommand }{ PusherChannel.ApiChannel}_{chanelGuid}";
+            var eventNameReceive = $"{ CommandType.MoviesCommand }{ PusherEvent.ApiEvent}";
+            var channelNameSend = $"{ CommandType.MoviesCommand }{ PusherChannel.WorkerServiceChannel}";
+            var eventNameSend = $"{ CommandType.MoviesCommand }{ PusherEvent.WorkerServiceEvent}";
 
             try
             {
                 await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive, pusherAppId, pusherKey, pusherSecret, pusherCluster);
                 
-                var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.GetMoviesCommand, SendMessageChanelGuid = chanelGuid.ToString() };
+                var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.MoviesCommand, SendMessageChanelGuid = chanelGuid.ToString() };
                 await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage), pusherAppId, pusherKey, pusherSecret, pusherCluster);
 
                 var stopwatch = new Stopwatch();
@@ -87,6 +87,70 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
             }
 
             return movies;
+        }
+
+        /// <summary>
+        /// Returns a movie from Radarr.
+        /// </summary>
+        /// <returns>Returns a Movie</returns>
+        public async Task<Movie> GetMovieServiceAsync(string pusherAppId, string pusherKey, string pusherSecret, string pusherCluster, int id)
+        {
+            Movie movie = null;
+
+            var chanelGuid = Guid.NewGuid();
+            var channelNameReceive = $"{ CommandType.MoviesCommand }{ PusherChannel.ApiChannel}_{chanelGuid}";
+            var eventNameReceive = $"{ CommandType.MoviesCommand }{ PusherEvent.ApiEvent}";
+            var channelNameSend = $"{ CommandType.MoviesCommand }{ PusherChannel.WorkerServiceChannel}";
+            var eventNameSend = $"{ CommandType.MoviesCommand }{ PusherEvent.WorkerServiceEvent}";
+
+            try
+            {
+                await _workerReceiver.ConnectWorker(channelNameReceive, eventNameReceive, pusherAppId, pusherKey, pusherSecret, pusherCluster);
+
+                var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.MoviesCommand, SendMessageChanelGuid = chanelGuid.ToString(), Values = JsonConvert.SerializeObject(id)};
+                await _workerReceiver.SendMessage(channelNameSend, eventNameSend, false, JsonConvert.SerializeObject(pusherSendMessage), pusherAppId, pusherKey, pusherSecret, pusherCluster);
+
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+
+                while (!_workerReceiver.CommandCompleted || stopwatch.ElapsedMilliseconds > _workerReceiver.TimeLimit.TotalMilliseconds)
+                {
+                    if (stopwatch.ElapsedMilliseconds > _workerReceiver.TimeLimit.TotalMilliseconds)
+                    {
+                        stopwatch.Stop();
+                        throw new Exception("Get movies took too long!");
+                    }
+                }
+
+                if (_workerReceiver.CommandCompleted)
+                {
+                    if (string.IsNullOrWhiteSpace(_workerReceiver.ReturnData))
+                    {
+                        throw new Exception("Get movies has no return data!");
+                    }
+
+                    var responseContent = await _cloudinaryClient.DownloadRawFile(_workerReceiver.ReturnData);
+
+                    await _cloudinaryService.DeleteCloudinaryRawFile(pusherAppId, pusherKey, pusherSecret, pusherCluster, _workerReceiver.CloudinaryPublicId);
+
+                    if (string.IsNullOrWhiteSpace(responseContent))
+                    {
+                        throw new Exception("Get movies cloudinary response has no return data!");
+                    }
+
+                    movie = JsonConvert.DeserializeObject<Movie>(responseContent);
+                }
+            }
+            catch (Exception ex)
+            {
+                await _logger.LogErrorAsync(ex.Message, ex.StackTrace);
+            }
+            finally
+            {
+                await _workerReceiver.DisconnectWorker();
+            }
+
+            return movie;
         }
     }
 }

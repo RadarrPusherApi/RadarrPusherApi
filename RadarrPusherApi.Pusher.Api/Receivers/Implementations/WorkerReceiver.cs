@@ -26,10 +26,10 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
         {
             _logger = logger;
 
-            _channelNameReceive = $"{ CommandType.GetWorkerServiceVersionCommand }{ PusherChannel.WorkerServiceChannel }";
-            _eventNameReceive = $"{ CommandType.GetWorkerServiceVersionCommand }{ PusherEvent.WorkerServiceEvent }";
-            _channelNameSend = $"{ CommandType.GetWorkerServiceVersionCommand }{ PusherChannel.ApiChannel }";
-            _eventNameSend = $"{ CommandType.GetWorkerServiceVersionCommand }{ PusherEvent.ApiEvent }";
+            _channelNameReceive = $"{ CommandType.WorkerServiceCommand }{ PusherChannel.WorkerServiceChannel }";
+            _eventNameReceive = $"{ CommandType.WorkerServiceCommand }{ PusherEvent.WorkerServiceEvent }";
+            _channelNameSend = $"{ CommandType.WorkerServiceCommand }{ PusherChannel.ApiChannel }";
+            _eventNameSend = $"{ CommandType.WorkerServiceCommand }{ PusherEvent.ApiEvent }";
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
                         var pusherReceiveMessageModel = JsonConvert.DeserializeObject<PusherReceiveMessageModel>(pusherData);
                         var deserializeObject = JsonConvert.DeserializeObject<PusherSendMessageModel>(pusherReceiveMessageModel.Message);
 
-                        if (deserializeObject.Command == CommandType.GetWorkerServiceVersionCommand)
+                        if (deserializeObject.Command == CommandType.WorkerServiceCommand)
                         {
                             var command = new GetWorkerServiceVersionCommand();
                             await ExecuteCommand(command, $"{_channelNameSend}_{deserializeObject.SendMessageChanelGuid}", _eventNameSend, appId, key, secret, cluster);

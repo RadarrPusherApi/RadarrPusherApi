@@ -5,8 +5,8 @@
     /// </summary>
     public enum CommandType
     {
-        DeleteCloudinaryRawFileCommand,
-        GetWorkerServiceVersionCommand,
-        GetMoviesCommand
+        CloudinaryCommand,
+        WorkerServiceCommand,
+        MoviesCommand
     }
 }
