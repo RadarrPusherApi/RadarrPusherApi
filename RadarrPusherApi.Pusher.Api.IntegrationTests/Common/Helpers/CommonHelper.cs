@@ -32,15 +32,15 @@ namespace RadarrPusherApi.Pusher.Api.IntegrationTests.Common.Helpers
             Settings = new Settings();
             configuration.Bind(Settings);
 
-            var restClient = new RestClient(Settings.RadarrApiBaseUrl);
-            restClient.AddDefaultHeader("X-Api-Key", Settings.RadarrApiKey);
+            var restClient = new RestClient(Settings.Radarr.ApiBaseUrl);
+            restClient.AddDefaultHeader("X-Api-Key", Settings.Radarr.ApiKey);
 
             RadarrClient = new RadarrClient(restClient);
 
             Invoker = new Invoker();
             Logger = new Logger(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RadarrPusherApi.Pusher.Api.IntegrationTests.SQLite.db3"));
-            CloudinaryClient = new CloudinaryClient(Settings.CloudinaryCloudName, Settings.CloudinaryApiKey, Settings.CloudinaryApiSecret);
-            PusherSettings = new PusherSettings(Settings.PusherAppId, Settings.PusherKey, Settings.PusherSecret, Settings.PusherCluster);
+            CloudinaryClient = new CloudinaryClient(Settings.Cloudinary.CloudName, Settings.Cloudinary.ApiKey, Settings.Cloudinary.ApiSecret);
+            PusherSettings = new PusherSettings(Settings.Pusher.AppId, Settings.Pusher.Key, Settings.Pusher.Secret, Settings.Pusher.Cluster);
             WorkerConnector = new WorkerConnector(Logger, Invoker, CloudinaryClient, PusherSettings);
         }
     }

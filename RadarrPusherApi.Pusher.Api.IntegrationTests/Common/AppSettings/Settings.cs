@@ -2,14 +2,8 @@
 {
     public class Settings
     {
-        public string CloudinaryCloudName { get; set; }
-        public string CloudinaryApiKey { get; set; }
-        public string CloudinaryApiSecret { get; set; }
-        public string PusherAppId { get; set; }
-        public string PusherKey { get; set; }
-        public string PusherSecret { get; set; }
-        public string PusherCluster { get; set; }
-        public string RadarrApiBaseUrl { get; set; }
-        public string RadarrApiKey { get; set; }
+        public Cloudinary Cloudinary { get; set; }
+        public Pusher Pusher { get; set; }
+        public Radarr Radarr { get; set; }
     }
 }
