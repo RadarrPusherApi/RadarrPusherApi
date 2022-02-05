@@ -13,15 +13,15 @@ var host = Host.CreateDefaultBuilder(args)
     .UseWindowsService()
     .ConfigureServices((hostContext, services) =>
     {
-        var cloudinaryCloudName = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("CloudinaryCloudName").Value;
-        var cloudinaryApiKey = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("CloudinaryApiKey").Value;
-        var cloudinaryApiSecret = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("CloudinaryApiSecret").Value;
-        var pusherAppId = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("PusherAppId").Value;
-        var pusherKey = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("PusherKey").Value;
-        var pusherSecret = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("PusherSecret").Value;
-        var pusherCluster = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("PusherCluster").Value;
-        var radarrApiBaseUrl = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("RadarrApiBaseUrl").Value;
-        var radarrApiKey = services.BuildServiceProvider().GetService<IConfiguration>()?.GetSection("RadarrApiKey").Value;
+        var cloudinaryCloudName = services.BuildServiceProvider().GetService<IConfiguration>()?.GetValue<string>("Cloudinary:CloudName");
+        var cloudinaryApiKey = services.BuildServiceProvider().GetService<IConfiguration>()?.GetValue<string>("Cloudinary:ApiKey");
+        var cloudinaryApiSecret = services.BuildServiceProvider().GetService<IConfiguration>()?.GetValue<string>("Cloudinary:ApiSecret");
+        var pusherAppId = services.BuildServiceProvider().GetService<IConfiguration>()?.GetValue<string>("Pusher:AppId");
+        var pusherKey = services.BuildServiceProvider().GetService<IConfiguration>()?.GetValue<string>("Pusher:Key");
+        var pusherSecret = services.BuildServiceProvider().GetService<IConfiguration>()?.GetValue<string>("Pusher:Secret");
+        var pusherCluster = services.BuildServiceProvider().GetService<IConfiguration>()?.GetValue<string>("Pusher:Cluster");
+        var radarrApiBaseUrl = services.BuildServiceProvider().GetService<IConfiguration>()?.GetValue<string>("Radarr:ApiBaseUrl");
+        var radarrApiKey = services.BuildServiceProvider().GetService<IConfiguration>()?.GetValue<string>("Radarr:ApiKey");
 
         services.AddSingleton<ICloudinaryClient, CloudinaryClient>(serviceProvider => new CloudinaryClient(cloudinaryCloudName, cloudinaryApiKey, cloudinaryApiSecret));
         services.AddSingleton<IPusherSettings, PusherSettings>(serviceProvider => new PusherSettings(pusherAppId, pusherKey, pusherSecret, pusherCluster));
