@@ -25,8 +25,8 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
             _cloudinaryClient = cloudinaryClient;
             _pusherSettings = pusherSettings;
 
-            _channelNameReceive = $"{ServiceType.Cloudinary}{PusherChannel.WorkerServiceChannel}";
-            _eventNameReceive = $"{ServiceType.Cloudinary}{PusherEvent.WorkerServiceEvent}";
+            _channelNameReceive = PusherChannel.WorkerServiceChannel.ToString();
+            _eventNameReceive = PusherEvent.WorkerServiceEvent.ToString();
 
             if (string.IsNullOrWhiteSpace(_pusherSettings.PusherAppId) || string.IsNullOrWhiteSpace(_pusherSettings.PusherKey) || string.IsNullOrWhiteSpace(_pusherSettings.PusherSecret) || string.IsNullOrWhiteSpace(_pusherSettings.PusherCluster))
             {

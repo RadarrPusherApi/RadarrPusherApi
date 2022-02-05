@@ -28,10 +28,10 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
             _radarrClient = radarrClient;
             _pusherSettings = pusherSettings;
 
-            _channelNameReceive = $"{ ServiceType.Movies }{ PusherChannel.WorkerServiceChannel }";
-            _eventNameReceive = $"{ ServiceType.Movies }{ PusherEvent.WorkerServiceEvent }";
-            _channelNameSend = $"{ ServiceType.Movies }{ PusherChannel.ApiChannel }";
-            _eventNameSend = $"{ ServiceType.Movies }{ PusherEvent.ApiEvent }";
+            _channelNameReceive = PusherChannel.WorkerServiceChannel.ToString();
+            _eventNameReceive = PusherEvent.WorkerServiceEvent.ToString();
+            _channelNameSend = PusherChannel.ApiChannel.ToString();
+            _eventNameSend = PusherEvent.ApiEvent.ToString();
 
             if (string.IsNullOrWhiteSpace(_pusherSettings.PusherAppId) || string.IsNullOrWhiteSpace(_pusherSettings.PusherKey) || string.IsNullOrWhiteSpace(_pusherSettings.PusherSecret) || string.IsNullOrWhiteSpace(_pusherSettings.PusherCluster))
             {
@@ -59,7 +59,7 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
                     if (deserializeObject.Command == CommandType.GetMoviesCommand)
                     {
                         var command = new GetMoviesCommand(_radarrClient);
-                        await ExecuteCommand(command, $"{_channelNameSend}_{deserializeObject.SendMessageChanelGuid}", _eventNameSend);
+                        await ExecuteCommand(command, _channelNameSend, $"{_eventNameSend}_{deserializeObject.SendMessageChanelGuid}");
                     }
                 });
 
@@ -92,7 +92,7 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
                     {
                         var id = JsonConvert.DeserializeObject<int>(deserializeObject.Values);
                         var command = new GetMovieCommand(_radarrClient, id);
-                        await ExecuteCommand(command, $"{_channelNameSend}_{deserializeObject.SendMessageChanelGuid}", _eventNameSend);
+                        await ExecuteCommand(command, _channelNameSend, $"{_eventNameSend}_{deserializeObject.SendMessageChanelGuid}");
                     }
                 });
 

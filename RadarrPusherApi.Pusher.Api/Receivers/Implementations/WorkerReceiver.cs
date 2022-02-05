@@ -25,10 +25,10 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
             _logger = logger;
             _pusherSettings = pusherSettings;
 
-            _channelNameReceive = $"{ ServiceType.WorkerService }{ PusherChannel.WorkerServiceChannel }";
-            _eventNameReceive = $"{ ServiceType.WorkerService }{ PusherEvent.WorkerServiceEvent }";
-            _channelNameSend = $"{ ServiceType.WorkerService }{ PusherChannel.ApiChannel }";
-            _eventNameSend = $"{ ServiceType.WorkerService }{ PusherEvent.ApiEvent }";
+            _channelNameReceive = PusherChannel.WorkerServiceChannel.ToString();
+            _eventNameReceive = PusherEvent.WorkerServiceEvent.ToString();
+            _channelNameSend = PusherChannel.ApiChannel.ToString();
+            _eventNameSend = PusherEvent.ApiEvent.ToString();
 
             if (string.IsNullOrWhiteSpace(_pusherSettings.PusherAppId) || string.IsNullOrWhiteSpace(_pusherSettings.PusherKey) || string.IsNullOrWhiteSpace(_pusherSettings.PusherSecret) || string.IsNullOrWhiteSpace(_pusherSettings.PusherCluster))
             {
@@ -56,7 +56,7 @@ namespace RadarrPusherApi.Pusher.Api.Receivers.Implementations
                     if (deserializeObject.Command == CommandType.GetWorkerServiceVersionCommand)
                     {
                         var command = new GetWorkerServiceVersionCommand();
-                        await ExecuteCommand(command, $"{_channelNameSend}_{deserializeObject.SendMessageChanelGuid}", _eventNameSend);
+                        await ExecuteCommand(command, _channelNameSend, $"{_eventNameSend}_{deserializeObject.SendMessageChanelGuid}");
                     }
                 });
 

@@ -29,10 +29,10 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
             _cloudinaryClient = cloudinaryClient;
             _cloudinaryService = cloudinaryService;
 
-            _channelNameReceive = $"{ServiceType.Movies }{ PusherChannel.ApiChannel}";
-            _eventNameReceive = $"{ServiceType.Movies }{PusherEvent.ApiEvent}";
-            _channelNameSend = $"{ServiceType.Movies}{ PusherChannel.WorkerServiceChannel}";
-            _eventNameSend = $"{ ServiceType.Movies }{ PusherEvent.WorkerServiceEvent}";
+            _channelNameReceive =PusherChannel.ApiChannel.ToString();
+            _eventNameReceive = PusherEvent.ApiEvent.ToString();
+            _channelNameSend = PusherChannel.WorkerServiceChannel.ToString();
+            _eventNameSend = PusherEvent.WorkerServiceEvent.ToString();
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 
             try
             {
-                await _workerConnector.ConnectWorker($"{_channelNameReceive}_{chanelGuid}", _eventNameReceive);
+                await _workerConnector.ConnectWorker(_channelNameReceive, $"{_eventNameReceive}_{chanelGuid}");
 
                 var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.GetMoviesCommand, SendMessageChanelGuid = chanelGuid.ToString() };
                 await _workerConnector.SendMessage(_channelNameSend, $"{_eventNameSend}_{CommandType.GetMoviesCommand}", false, JsonConvert.SerializeObject(pusherSendMessage));
@@ -107,7 +107,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 
             try
             {
-                await _workerConnector.ConnectWorker($"{_channelNameReceive}_{chanelGuid}", _eventNameReceive);
+                await _workerConnector.ConnectWorker(_channelNameReceive, $"{_eventNameReceive}_{chanelGuid}");
 
                 var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.GetMovieCommand, SendMessageChanelGuid = chanelGuid.ToString(), Values = JsonConvert.SerializeObject(id)};
                 await _workerConnector.SendMessage(_channelNameSend, $"{_eventNameSend}_{CommandType.GetMovieCommand}", false, JsonConvert.SerializeObject(pusherSendMessage));

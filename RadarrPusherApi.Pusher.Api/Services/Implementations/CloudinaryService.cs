@@ -22,10 +22,10 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
             _logger = logger;
             _workerConnector = workerConnector;
 
-            _channelNameReceive = $"{ServiceType.Cloudinary}{PusherChannel.ApiChannel}";
-            _eventNameReceive = $"{ServiceType.Cloudinary}{PusherEvent.ApiEvent}";
-            _channelNameSend = $"{ServiceType.Cloudinary}{PusherChannel.WorkerServiceChannel}";
-            _eventNameSend = $"{ServiceType.Cloudinary}{PusherEvent.WorkerServiceEvent}";
+            _channelNameReceive = PusherChannel.ApiChannel.ToString();
+            _eventNameReceive = PusherEvent.ApiEvent.ToString();
+            _channelNameSend = PusherChannel.WorkerServiceChannel.ToString();
+            _eventNameSend = PusherEvent.WorkerServiceEvent.ToString();
         }
 
         /// <summary>

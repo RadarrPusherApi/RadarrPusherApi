@@ -28,10 +28,10 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
             _cloudinaryClient = cloudinaryClient;
             _cloudinaryService = cloudinaryService;
 
-            _channelNameReceive = $"{ ServiceType.WorkerService }{ PusherChannel.ApiChannel}";
-            _eventNameReceive = $"{ ServiceType.WorkerService }{ PusherEvent.ApiEvent}";
-            _channelNameSend = $"{ ServiceType.WorkerService }{ PusherChannel.WorkerServiceChannel}";
-            _eventNameSend = $"{ ServiceType.WorkerService }{ PusherEvent.WorkerServiceEvent}";
+            _channelNameReceive = PusherChannel.ApiChannel.ToString();
+            _eventNameReceive = PusherEvent.ApiEvent.ToString();
+            _channelNameSend = PusherChannel.WorkerServiceChannel.ToString();
+            _eventNameSend = PusherEvent.WorkerServiceEvent.ToString();
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace RadarrPusherApi.Pusher.Api.Services.Implementations
 
             try
             {
-                await _workerConnector.ConnectWorker($"{_channelNameReceive}_{chanelGuid}", _eventNameReceive);
+                await _workerConnector.ConnectWorker(_channelNameReceive, $"{_eventNameReceive}_{chanelGuid}");
 
                 var pusherSendMessage = new PusherSendMessageModel { Command = CommandType.GetWorkerServiceVersionCommand, SendMessageChanelGuid = chanelGuid.ToString() };
                 await _workerConnector.SendMessage(_channelNameSend, $"{_eventNameSend}_{CommandType.GetWorkerServiceVersionCommand}", false, JsonConvert.SerializeObject(pusherSendMessage));
