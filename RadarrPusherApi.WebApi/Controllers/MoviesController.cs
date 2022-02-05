@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NzbDrone.Core.Movies;
 
@@ -16,6 +17,7 @@ namespace RadarrPusherApi.WebApi.Controllers
 
         [HttpGet]
         [Route("")]
+        [Authorize]
         public async Task<IList<Movie>> GetMovies()
         {
             return await _moviesService.GetMoviesServiceAsync();
@@ -23,7 +25,7 @@ namespace RadarrPusherApi.WebApi.Controllers
 
         [HttpGet]
         [Route("{id}")]
-
+        [Authorize]
         public async Task<Movie> GetMovie(int id)
         {
             return await _moviesService.GetMovieServiceAsync(id);

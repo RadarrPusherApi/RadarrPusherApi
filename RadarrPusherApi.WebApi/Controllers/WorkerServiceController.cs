@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RadarrPusherApi.Pusher.Api.Services.Interfaces;
 
@@ -14,7 +15,9 @@ namespace RadarrPusherApi.WebApi.Controllers
             _workerService = workerService;
         }
 
-        [HttpGet(Name = "GetWorkerServiceVersion")]
+        [HttpGet]
+        [Route("")]
+        [Authorize]
         public async Task<Version> Get()
         {
             return await _workerService.GetWorkerServiceVersionServiceAsync();
