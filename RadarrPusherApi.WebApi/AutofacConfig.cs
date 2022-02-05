@@ -15,13 +15,13 @@ namespace RadarrPusherApi.WebApi
     {
         public static void Configure(IConfiguration configuration, ContainerBuilder builder)
         {
-            var cloudinaryCloudName = configuration.GetValue<string>("CloudinaryCloudName");
-            var cloudinaryApiKey = configuration.GetValue<string>("CloudinaryApiKey");
-            var cloudinaryApiSecret = configuration.GetValue<string>("CloudinaryApiSecret");
-            var pusherAppId = configuration.GetValue<string>("PusherAppId");
-            var pusherKey = configuration.GetValue<string>("PusherKey");
-            var pusherSecret = configuration.GetValue<string>("PusherSecret");
-            var pusherCluster = configuration.GetValue<string>("PusherCluster");
+            var cloudinaryCloudName = configuration.GetValue<string>("Cloudinary:CloudName");
+            var cloudinaryApiKey = configuration.GetValue<string>("Cloudinary:ApiKey");
+            var cloudinaryApiSecret = configuration.GetValue<string>("Cloudinary:ApiSecret");
+            var pusherAppId = configuration.GetValue<string>("Pusher:AppId");
+            var pusherKey = configuration.GetValue<string>("Pusher:Key");
+            var pusherSecret = configuration.GetValue<string>("Pusher:Secret");
+            var pusherCluster = configuration.GetValue<string>("Pusher:Cluster");
 
             builder.Register(c => new CloudinaryClient(cloudinaryCloudName, cloudinaryApiKey, cloudinaryApiSecret)).As<ICloudinaryClient>().SingleInstance();
             builder.Register(c => new PusherSettings(pusherAppId, pusherKey, pusherSecret, pusherCluster)).As<IPusherSettings>().SingleInstance();
