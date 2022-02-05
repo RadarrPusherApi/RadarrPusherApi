@@ -14,7 +14,7 @@ namespace RadarrPusherApi.Cloudinary.Api.IntegrationTests
         public CloudinaryClientTests(CommonHelper commonHelper)
         {
             _commonHelper = commonHelper;
-            _cloudinaryClient = new CloudinaryClient(commonHelper.Settings.CloudinaryCloudName, commonHelper.Settings.CloudinaryApiKey, commonHelper.Settings.CloudinaryApiSecret);
+            _cloudinaryClient = new CloudinaryClient(commonHelper.Settings.Cloudinary.CloudName, commonHelper.Settings.Cloudinary.ApiKey, commonHelper.Settings.Cloudinary.ApiSecret);
         }
 
         [Fact]
