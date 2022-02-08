@@ -18,7 +18,7 @@ namespace RadarrPusherApi.WebApi.Controllers
         [HttpGet]
         [Route("")]
         [Authorize]
-        public async Task<Version> Get()
+        public async Task<Version> GetWorkerServiceVersion()
         {
             return await _workerService.GetWorkerServiceVersionServiceAsync();
         }
