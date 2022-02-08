@@ -1,6 +1,6 @@
+using RadarrPusherApi.Cloudinary.Api.IntegrationTests.Common.Helpers;
 using System;
 using System.Threading.Tasks;
-using RadarrPusherApi.Cloudinary.Api.IntegrationTests.Common.Helpers;
 using Xunit;
 
 namespace RadarrPusherApi.Cloudinary.Api.IntegrationTests
@@ -8,12 +8,10 @@ namespace RadarrPusherApi.Cloudinary.Api.IntegrationTests
     [Collection(nameof(CommonHelper))]
     public class CloudinaryClientTests
     {
-        private readonly CommonHelper _commonHelper;
         private readonly ICloudinaryClient _cloudinaryClient;
 
         public CloudinaryClientTests(CommonHelper commonHelper)
         {
-            _commonHelper = commonHelper;
             _cloudinaryClient = new CloudinaryClient(commonHelper.Settings.Cloudinary.CloudName, commonHelper.Settings.Cloudinary.ApiKey, commonHelper.Settings.Cloudinary.ApiSecret);
         }
 

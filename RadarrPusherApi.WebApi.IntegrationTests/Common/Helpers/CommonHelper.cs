@@ -10,17 +10,17 @@ namespace RadarrPusherApi.WebApi.IntegrationTests.Common.Helpers
     {
         public ITestOutputHelper OutputHelper { get; set; }
 
-        public Settings Settings { get; }
-        public RestClient RestClient { get; }
+        private readonly Settings _settings;
+        private readonly RestClient _restClient;
 
         public CommonHelper()
         {
             var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-            Settings = new Settings();
-            configuration.Bind(Settings);
+            _settings = new Settings();
+            configuration.Bind(_settings);
 
-            RestClient = new RestClient(Settings.RadarrPusherApiWebApi.ApiBaseUrl);
+            _restClient = new RestClient(_settings.RadarrPusherApiWebApi.ApiBaseUrl);
         }
 
         public async Task<RestResponse> GetAuth0BearerToken()
@@ -29,9 +29,9 @@ namespace RadarrPusherApi.WebApi.IntegrationTests.Common.Helpers
             {
                 RequestFormat = DataFormat.Json
             };
-            request.AddBody(new { client_id = Settings.Auth0.ClientId, client_secret = Settings.Auth0.ClientSecret, audience = Settings.Auth0.Audience, grant_type = Settings.Auth0.GrantType });
+            request.AddBody(new { client_id = _settings.Auth0.ClientId, client_secret = _settings.Auth0.ClientSecret, audience = _settings.Auth0.Audience, grant_type = _settings.Auth0.GrantType });
             
-            var client = new RestClient($"https://{Settings.Auth0.Domain}/oauth/");
+            var client = new RestClient($"https://{_settings.Auth0.Domain}/oauth/");
             var response = await client.PostAsync(request);
 
             OutputHelper.WriteLine(response.Content);
@@ -43,7 +43,7 @@ namespace RadarrPusherApi.WebApi.IntegrationTests.Common.Helpers
         {
             var request = new RestRequest(endPoint, method);
             request.AddHeader("authorization", $"{bearer} {token}");
-            var response = await RestClient.ExecuteAsync(request);
+            var response = await _restClient.ExecuteAsync(request);
 
             OutputHelper.WriteLine(response.Content);
 

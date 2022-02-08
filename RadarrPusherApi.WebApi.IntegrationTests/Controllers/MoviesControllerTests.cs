@@ -10,11 +10,11 @@ using Xunit.Abstractions;
 namespace RadarrPusherApi.WebApi.IntegrationTests.Controllers
 {
     [Collection(nameof(CommonHelper))]
-    public class MoviesController
+    public class MoviesControllerTests
     {
         private readonly CommonHelper _commonHelper;
 
-        public MoviesController(ITestOutputHelper outputHelper, CommonHelper commonHelper)
+        public MoviesControllerTests(ITestOutputHelper outputHelper, CommonHelper commonHelper)
         {
             commonHelper.OutputHelper = outputHelper;
             _commonHelper = commonHelper;
