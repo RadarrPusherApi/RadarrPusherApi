@@ -2,6 +2,7 @@ name: Build & Test
 
 trigger:
 - dev
+- main
 
 pool:
   vmImage: 'windows-2022'
