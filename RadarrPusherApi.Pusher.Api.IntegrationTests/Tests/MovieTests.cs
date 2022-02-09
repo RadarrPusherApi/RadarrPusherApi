@@ -1,11 +1,11 @@
+using System.Threading.Tasks;
 using RadarrPusherApi.Pusher.Api.IntegrationTests.Common.Helpers;
 using RadarrPusherApi.Pusher.Api.Receivers.Implementations;
 using RadarrPusherApi.Pusher.Api.Services.Implementations;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace RadarrPusherApi.Pusher.Api.IntegrationTests
+namespace RadarrPusherApi.Pusher.Api.IntegrationTests.Tests
 {
     [Collection(nameof(CommonHelper))]
     public class MovieTests

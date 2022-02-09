@@ -39,8 +39,8 @@ namespace RadarrPusherApi.Cloudinary.Api
         public async Task<string> DownloadRawFile(string url)
         {
             var restClient = new RestClient();
-            var request = new RestRequest(url, Method.GET);
-            var response = await restClient.ExecuteAsync(request);
+            var request = new RestRequest(url);
+            var response = await restClient.ExecuteGetAsync(request);
             return response.Content;
         }
 
