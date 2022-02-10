@@ -85,7 +85,7 @@ steps:
     appType: 'webApp'
     WebAppName: '$(AppName)'
     deployToSlotOrASE: true
-    ResourceGroupName: '$(ResourceGroupName)'
+    ResourceGroupName: 'RadarrPusherApiGroup'
     SlotName: 'production'
     packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
     enableCustomDeployment: true
