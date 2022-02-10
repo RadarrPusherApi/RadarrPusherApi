@@ -1,4 +1,4 @@
-name: Build & Test
+name: Build, Test, Publish & Deploy
 
 trigger:
 - dev
@@ -76,6 +76,7 @@ steps:
     projects: RadarrPusherApi.WebApi\RadarrPusherApi.WebApi.csproj
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: true
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
 
 - task: AzureRmWebAppDeployment@4
   displayName: 'Deploy Azure Web App'
@@ -91,3 +92,4 @@ steps:
     enableCustomDeployment: true
     DeploymentType: 'zipDeploy'
     JSONFiles: 'appsettings.json'
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
