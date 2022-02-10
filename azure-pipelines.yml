@@ -83,7 +83,7 @@ steps:
     ConnectionType: 'AzureRM'
     azureSubscription: '$(SubscriptionId)'
     appType: 'webApp'
-    WebAppName: '$(AppName)'
+    WebAppName: 'RadarrPusherApi'
     deployToSlotOrASE: true
     ResourceGroupName: 'RadarrPusherApiGroup'
     SlotName: 'production'
