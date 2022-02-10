@@ -20,6 +20,12 @@ variables:
   - group: WebApi
 
 steps:
+- task: CmdLine@2
+  inputs:
+    script: |
+      echo '$(SubscriptionId)'
+      echo $(AppName)
+
 - task: NuGetToolInstaller@1
   displayName: "Install NuGet"
 
