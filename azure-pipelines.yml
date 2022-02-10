@@ -77,16 +77,16 @@ steps:
     zipAfterPublish: true
 
 - task: AzureRmWebAppDeployment@4
+  displayName: 'Deploy Azure Web App'
   inputs:
     ConnectionType: 'AzureRM'
     azureSubscription: 'Pay-As-You-Go(6d382b22-a8fe-40f8-aa1b-1db672af4c64)'
-    appType: 'apiApp'
+    appType: 'webApp'
     WebAppName: 'RadarrPusherApi'
     deployToSlotOrASE: true
     ResourceGroupName: 'RadarrPusherApiGroup'
     SlotName: 'production'
-    VirtualApplication: 'RadarrPusherApi'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
     enableCustomDeployment: true
     DeploymentType: 'zipDeploy'
     JSONFiles: 'appsettings.json'
