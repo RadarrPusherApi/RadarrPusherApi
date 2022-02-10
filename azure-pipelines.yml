@@ -25,7 +25,6 @@ steps:
     script: |
       echo '$(SubscriptionId)'
       echo $(AppName)
-      echo $(SubscriptionId)
 
 - task: NuGetToolInstaller@1
   displayName: "Install NuGet"
