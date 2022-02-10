@@ -81,11 +81,11 @@ steps:
   displayName: 'Deploy Azure Web App'
   inputs:
     ConnectionType: 'AzureRM'
-    azureSubscription: '$(SubscriptionId)'
+    azureSubscription: $(SubscriptionId)
     appType: 'webApp'
-    WebAppName: 'RadarrPusherApi'
+    WebAppName: $(AppName)
     deployToSlotOrASE: true
-    ResourceGroupName: 'RadarrPusherApiGroup'
+    ResourceGroupName: $(ResourceGroupName)
     SlotName: 'production'
     packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
     enableCustomDeployment: true
