@@ -17,6 +17,7 @@ variables:
   - group: Cloudinary
   - group: Pusher
   - group: Radarr
+  - group: WebApi
 
 steps:
 - task: NuGetToolInstaller@1
@@ -59,3 +60,20 @@ steps:
       !**\xunit.runner.visualstudio.testadapter.dll
       !**\xunit.runner.visualstudio.dotnetcore.testadapter.dll
     searchFolder: '$(System.DefaultWorkingDirectory)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish and zip'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: RadarrPusherApi.WebApi\RadarrPusherApi.WebApi.csproj
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: true
+
+- task: AzureWebApp@1
+  displayName: 'Deploy Azure Web App'
+  inputs:
+    azureSubscription: '$(SubscriptionId)'
+    appName: $(AppName)
+    appType: 'webApp'
+    package: $(Build.ArtifactStagingDirectory)/**/*.zip
